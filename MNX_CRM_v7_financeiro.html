@@ -1,0 +1,1380 @@
+<html lang="pt-BR"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0d1635">
+<title>MNX CRM</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&amp;family=DM+Serif+Display&amp;display=swap" rel="stylesheet">
+<style>
+:root{
+  --preto:#1a1a1a;--ouro:#c9a84c;--ouro-claro:#f5e9cc;--ouro-text:#7a4f00;
+  --navy:#0d1635;
+  --bg:#f4f3ef;--bg2:#eceae3;--surface:#fff;--border:rgba(0,0,0,0.08);
+  --text:#1a1a1a;--muted:#888580;
+  --danger:#c0392b;--danger-bg:#fdecea;
+  --success:#1a5c2a;--success-bg:#d4edda;
+  --warning:#7a4f00;--warning-bg:#fff3cd;
+  --info:#0c447c;--info-bg:#d0e8f8;
+  --hot:#8b3a00;--hot-bg:#ffe5cc;
+  --purple:#3c3489;--purple-bg:#e8e4f8;
+  --r:14px;--r-sm:8px;
+  --shadow:0 2px 12px rgba(0,0,0,0.08);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text)}
+#app{display:flex;flex-direction:column;height:100vh;height:100dvh}
+
+/* TOPBAR */
+.topbar{background:var(--navy);padding:env(safe-area-inset-top,0) 0 0;flex-shrink:0;z-index:100}
+.topbar-inner{display:flex;align-items:center;gap:12px;padding:10px 16px}
+.logo-img{width:48px;height:48px;border-radius:8px;overflow:hidden;background:var(--navy);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo-img img{width:46px;height:46px;object-fit:contain}
+.topbar-title{font-family:'DM Serif Display',serif;font-size:16px;color:#fff;line-height:1.2}
+.topbar-sub{font-size:10px;color:rgba(255,255,255,.45);margin-top:1px}
+.icon-btn{width:36px;height:36px;border-radius:50%;border:none;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;color:#fff}
+.icon-btn:active{background:rgba(255,255,255,.2)}
+.icon-btn svg{width:18px;height:18px}
+
+/* TABBAR */
+.tabbar{background:var(--navy);border-top:1px solid rgba(255,255,255,.08);display:flex;padding-bottom:env(safe-area-inset-bottom,0);flex-shrink:0}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px;border:none;background:none;color:rgba(255,255,255,.35);cursor:pointer;font-size:10px;font-family:'DM Sans',sans-serif}
+.tab svg{width:22px;height:22px}
+.tab.active{color:var(--ouro)}
+
+/* SCREENS */
+.screen{display:none;flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.screen.active{display:block}
+.screen-pad{padding:14px}
+
+/* CARDS */
+.card{background:var(--surface);border-radius:var(--r);box-shadow:var(--shadow);margin-bottom:10px;overflow:hidden;border:1px solid var(--border)}
+.card-header{padding:12px 14px 8px;display:flex;align-items:flex-start;gap:10px}
+.card-body{padding:0 14px 12px}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:500;white-space:nowrap}
+.b-fase{background:rgba(201,168,76,.15);color:#7a4f00}
+
+/* STATUS COLORS via inline style - computed in JS */
+
+/* LEAD CARD */
+.lead-name{font-size:15px;font-weight:600;line-height:1.3}
+.lead-loc{font-size:12px;color:var(--muted);margin-top:1px}
+.lead-row{display:flex;align-items:center;gap:6px;margin-bottom:6px;flex-wrap:wrap}
+.meta-row{display:flex;gap:14px;margin-top:8px}
+.meta-item{display:flex;flex-direction:column;gap:1px}
+.meta-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
+.meta-val{font-size:13px;font-weight:500}
+.meta-val.ouro{color:var(--ouro-text)}
+.meta-val.urgente{color:var(--danger)}
+.acao-pill{background:var(--bg2);border-radius:6px;padding:5px 9px;font-size:12px;color:var(--text);display:flex;align-items:center;gap:5px;margin-top:8px}
+.acao-pill svg{width:12px;height:12px;color:var(--ouro);flex-shrink:0}
+
+/* CARD FOOTER ROW */
+.card-actions{padding:8px 14px;border-top:1px solid var(--border);display:flex;gap:6px;align-items:center}
+
+/* BUTTONS */
+.btn{border:none;border-radius:var(--r-sm);padding:8px 14px;font-size:12px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif}
+.btn:active{opacity:.75}
+.btn-dark{background:var(--preto);color:#fff}
+.btn-ouro{background:var(--ouro);color:var(--preto)}
+.btn-ghost{background:var(--bg2);color:var(--text)}
+.btn-danger{background:var(--danger-bg);color:var(--danger);border:1px solid rgba(192,57,43,.2)}
+.btn-danger-solid{background:var(--danger);color:#fff}
+.btn-sm{padding:6px 10px;font-size:11px}
+.btn-full{width:100%;margin-top:8px}
+.btn-full-lg{width:100%;margin-top:10px;padding:12px;font-size:14px;border-radius:var(--r-sm)}
+
+/* SEARCH & FILTER */
+.search-wrap{margin-bottom:10px}
+.search-input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:10px 14px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text);outline:none}
+.search-input::placeholder{color:var(--muted)}
+.filter-scroll{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;margin-bottom:12px}
+.filter-scroll::-webkit-scrollbar{display:none}
+.chip{padding:5px 13px;border-radius:20px;font-size:11px;font-weight:500;white-space:nowrap;border:1px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif}
+.chip.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+
+/* URGENTE BANNER */
+.urgente-strip{background:var(--danger-bg);border-left:3px solid var(--danger);border-radius:0 var(--r-sm) var(--r-sm) 0;padding:8px 12px;margin-bottom:10px;font-size:12px;color:var(--danger);font-weight:500}
+
+/* KPI */
+.kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.kpi-card{background:var(--surface);border-radius:var(--r);padding:14px;box-shadow:var(--shadow);border:1px solid var(--border)}
+.kpi-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.kpi-val{font-family:'DM Serif Display',serif;font-size:28px;color:var(--preto);line-height:1}
+.kpi-val.ouro{color:var(--ouro-text)}
+.kpi-val.verde{color:var(--success)}
+.kpi-val.red{color:var(--danger)}
+.kpi-sub{font-size:11px;color:var(--muted);margin-top:4px}
+.section-title{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin:16px 0 8px}
+
+/* FUNIL */
+.funil-row{background:var(--surface);border-radius:var(--r);box-shadow:var(--shadow);border:1px solid var(--border);overflow:hidden;margin-bottom:14px}
+.funil-item{display:flex;align-items:center;padding:12px 14px;border-bottom:1px solid var(--border);gap:10px}
+.funil-item:last-child{border-bottom:none}
+.funil-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.funil-label{font-size:13px;font-weight:500;flex:1}
+.funil-count{font-size:19px;font-weight:600;font-family:'DM Serif Display',serif;min-width:26px;text-align:right}
+.funil-bar-wrap{flex:2;background:var(--bg2);border-radius:4px;height:5px;overflow:hidden}
+.funil-bar{height:100%;border-radius:4px}
+
+/* OVERLAY & DRAWER */
+.overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.5);backdrop-filter:blur(1px)}
+.overlay.open{display:block}
+.drawer{position:fixed;bottom:0;left:0;right:0;z-index:201;background:var(--surface);border-radius:20px 20px 0 0;padding:0 0 env(safe-area-inset-bottom,12px);transform:translateY(100%);transition:transform .28s cubic-bezier(.32,.72,0,1);max-height:92vh;overflow-y:auto}
+.drawer.open{transform:translateY(0)}
+.drawer-handle{width:36px;height:4px;background:var(--border);border-radius:2px;margin:12px auto 0}
+.drawer-title{font-size:17px;font-weight:600;padding:14px 20px 0}
+.drawer-body{padding:14px 20px}
+.drawer-actions{display:flex;gap:8px;padding:0 20px 6px}
+.drawer-actions .btn{flex:1;padding:12px;font-size:14px;border-radius:var(--r-sm)}
+
+/* FORM FIELDS */
+.field-group{margin-bottom:13px}
+.field-label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px;display:block}
+.field-label span{font-weight:400;text-transform:none;letter-spacing:0}
+.field-val{font-size:14px;color:var(--text);line-height:1.5}
+.field-input{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:var(--r-sm);padding:9px 11px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;-webkit-appearance:none}
+.field-input:focus{border-color:var(--ouro)}
+select.field-input{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:30px}
+textarea.field-input{resize:vertical;min-height:76px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+/* DETAIL GRID */
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.followup-box{background:var(--bg);border-radius:var(--r-sm);padding:11px;margin-bottom:14px}
+
+/* EMPTY */
+.empty{text-align:center;padding:40px 20px;color:var(--muted)}
+.empty svg{width:44px;height:44px;margin:0 auto 12px;display:block;opacity:.3}
+.empty p{font-size:14px}
+
+/* HIST */
+.hist-meta{font-size:11px;font-weight:600;color:var(--muted)}
+.hist-resumo{font-size:13px;line-height:1.6}
+.hist-proximo{font-size:12px;color:var(--ouro-text);font-weight:500;margin-top:5px}
+
+/* DANGER ZONE */
+.danger-zone{margin-top:20px;padding:14px;border:1px solid rgba(192,57,43,.2);border-radius:var(--r-sm);background:var(--danger-bg)}
+.danger-zone p{font-size:12px;color:var(--danger);margin-bottom:10px;line-height:1.5}
+
+/* DOCUMENTOS */
+.doc-item{display:flex;align-items:center;gap:8px;background:var(--bg);border-radius:var(--r-sm);padding:9px 12px;margin-bottom:7px;border:1px solid var(--border)}
+.doc-icon{width:32px;height:32px;border-radius:6px;background:var(--navy);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.doc-icon svg{width:16px;height:16px;stroke:#fff}
+.doc-info{flex:1;min-width:0}
+.doc-nome{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.doc-url{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.doc-del{background:none;border:none;color:var(--muted);cursor:pointer;padding:4px;flex-shrink:0;font-size:18px;line-height:1}
+
+/* TOAST */
+.toast{position:fixed;bottom:calc(70px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%) translateY(20px);background:var(--preto);color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:500;z-index:300;opacity:0;transition:all .25s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.lead-card{animation:fadeIn .16s ease both}
+
+/* MODAL CONFIRMAÇÃO */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9999;display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity .2s}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal-box{background:#fff;border-radius:16px;padding:24px;max-width:320px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.modal-title{font-size:16px;font-weight:700;color:var(--navy);margin-bottom:8px}
+.modal-msg{font-size:14px;color:#444;line-height:1.6;margin-bottom:20px}
+.modal-btns{display:flex;gap:10px}
+.modal-btns button{flex:1;padding:12px;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit}
+.modal-cancel{background:#f0f0f0;color:#333}
+.modal-confirm{background:var(--danger);color:#fff}
+.modal-confirm.ouro{background:var(--navy);color:#fff}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="logo-img"><img src="data:image/jpeg;base64,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gChb77776pX20Df7777pEH6kND8gChb77776oH6jx7/77qtoFWkEDbkChb77776oH4qzs3zpo4kJ6lQLwoChb77776oH750YTIJnWZ76lRfZsDh777776oH7b506UVVp776lRHX2Q4nX7776oH7775pjvD7776lReZGzw537776oH7775vTBy3776lQXUL7z4H7776oH7776RPgTf776lRNcL7z4H7776oH77765Dqf7776lQb4L7z4H7776oH777742Tf7776lQTUL7z4H7776oH7776Sb7j/776lQX0L7z4H7776oH776pWuy5z776lQN4L7z4H7776wTHLKJmAPKDLLSlYD0f/P8AA2+++vMMMMMMMMMMMMdpcPPPPDHPc++++Pb7RRHxlpzFlFbPjx9l0fv+++++gIcSK/UoPr2MUc82SyXwqr+++++sCoec3Cu8oWUSz4MiocACk+++++sMse888M+csMc8M8MYl8M++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//aAAwDAQACAAMAAAAQ/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wDYPff/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8Aav6Y2/8A/wD/AP68/wD/AP8A/wD/AP8A/wD/AP8A61OZ89cW/wD/AP8A/tu6/wD/AP8A/wD/AP8A/wD/AIW//wDU9rW//wD/AP8A8o80/wD/AP8A/wD/AP8A5El94709rW//AP8A/wD85N2//wD/AP8A/wD/AF7b72w2z2tb/wD/AP8A/wAqxoh//wD/AP8A5Fj1+9pz29rW/wD/AP8A/wDLFrfkNP8A/wDGwFe+/tiN9rW//wD/AP8A89WgHUZ17MzRo9+o6089rW//AP8A/wD89WXvU65Wx5t9/wDqKtu+On//AP8A/wD/AD1Zf+koGHd33/8A+or8xkwi2/8A/wD/AM9WX/8A+jLR3f8A/wD+orBctDtu/wD/AP8A89WX/wD0NrX7v/8A/wCop1r/AA/6P/8A/wD89WX/AP2DHzrP/wD/AOo6Vr/D/o//AP8A/wA9WX//ALZrjP8A/wD/APqKvK/w/wCj/wD/AP8Az1Zf/wD5dkQ//wD/AP6jvyv8P+j/AP8A/wDz1Zf/AJIF9O4//wD/AKizyv8AD/o//wD/APz1Zf8A9XpK9K//AP8A6j96v8P+j/8A/wD+vkW8MVv/ADz3zDT62/S/AHCLX/8A/wD8MMMMMMMMMMMNOZv/AP8A/wCdf3v/AP8A/lNhRMo7QRljLpV1DkU1yrt//wD/AP8Av3RM6prLdDjooBu50IGm8n//AP8A/wDrdBgIh8PyuDesv0sexS0bW/8A/wD/APtt/v8A337TzTb7/wB301v993//AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP/EAEURAAECAgQGDggGAgIDAAAAAAECAwAEBQYREiExNVFxsRATICIyNEFTYXKBosHiFBYzkZLR4fAjQlKCobIVMFDxQENi/9oACAECAQE/AP8AjSQBaYpGtcpK7xjfq6MXv+UStdFFyyYbAT0cnzhl5D6A40bUn/x6YrIxRyiygX1/wNMFylawKsHA9yR8/wCTFHVSlpffzJvq7v1+8EUJRqaSfWwo2b0kabREnOzlXpgsvDecoz9KfvTDD6JhtLzZtSrdTCy20pYxgExQ9LtUmzfTgUMY++T/AGrWltJWs2ARI0+Z+fW217NKSdJtGH5RVyUbpKeUuZF7AVaTb9YJbl0WmxKR2ARSdb2WrW5QXznOL6xU3j6uqdYitcsh2j1OKxpsI7TZFTnVLkVJP5VHwO6mheZWOg6okp12SdDzJsI+7DFFUqzSbO2N4DyjN98n+tSkoBUo2ARWCsBn1bQxgbHe+mYRVLjTnUVrTFD0qaLcW6lN4kWfyIQzStYF3lcDpwJGjP8AyYo2rEpJC+5v1dOLsHzipvH1dU6xFZsmO9n9hFTOJr63gN1MeyXoOqKNk/TplMvbZet1Ew25N0JN4rFJ9xHiDFG0kzSLIeaOkZj/AKSQkWnFFYqwGdPo8ufwxj/+vpEvV8t0e5OzIsNm9HifCKo8ac6itaYqpJsTU2oPpvAJt7bRD0wzKN33VBKRFJVwttbkU/uPgPn7oqbx9XVOsRWbJjvZ/YRUzia+t4DdTHsl6DqireU2u3+pimaHapRq6cCxiOboPREtMzVCTZwWEYxnH3iMUfSDNIMh5k6RmObdkhItMVirCZwmWlj+Hyn9X01xVurttk5Njqp8T4RTmTntEVR4051Fa0xRdKOUYtbjQtURZh5MMMURSVNL26YJCc6vAf8AQijqAlKPF5Cbys58M0VN4+rqnWIrNkx3s/sIqZxNfW8Bupj2S9B1RVrKjXb/AFMOultyKZodqlWrycCxiPgfvBElOzNCzRwWEYFJz/fIYkZ1meZDzJwH+Og7kkAWmKxViM2TKyx/D5T+r6a9dW6u7ZZNzQwflTn6T0Zs+jGMMU5k57RFUeNOdRWtMVQYbenFbYkGxNotz2iJykJeRRfmFWa+wRSFbJiZO0yKboPLjUfl/MVN4+rqnWIrNkx3s/sIqZxNfW8Bupj2S9B1RVvKbPb/AFMTXDhp0tnoinKEbpRvbG8DgxHP0H7wRRtIzFDTJBGDEpP3y5olJtqcZDzJtSdnFFY6w+kEysqd5ynP9NeiKuVd26ybmhvfyjP0no16Mbz13epiX9mIpzJz2iKpcac6itaYo+kH5BalS/CULP8AqJOrc7SK9vnFFIOfCo9nJ2+6JGiZWj02MIw5+WKm8fV1TrEVmyY72f2EVM4mvreA3Ux7Jeg6oq3lNnt1GJrhwWb7YUnHDLpbOHFFP0Gikm9uZ9oP56D4RRVKv0O+Qob38yfvlES0y3NNB5k2pOxWOsW3Wykqd7+Y5+gdGvRjq5V4zBE1NDecgz9OjXoh567vUwyzfNpxQBZgEU5k57RFU+NudRWsRU1CVTiyoYk+IikKXlaPFrysOYY/vTE5WOepNW0SaSkHNwvf8vfFTePq6p1iKzZMd7P7CKmcTX1vAbqY9kvQdUVbymz26jE1w4a4Ah9m9vkwy9cNhxRWCgEz6fSGPaDvfXN7ooamHaJeKV8A8JPjpisFZA+n0aTO9OM5+jRn+7au1dM0RNTI3nIP1fTXDzwQLiIZZLhtOKALMA2Kcyc9oiqfG3OorWIkJqaYWRKE3lCzBj7Io+qTz522eVd6MajpPJ/MSkhLySLkum7954qxQk1JvGZfF0EWWcvJFJSQn5ZcuTYFcvbbFA0U5RbKmXFA2qtFmgbqY9kvQdUVbymz26jE1w4a4A2H2bd8mGXrmA4orFV8Tg9Jlhv+Ufq+uuKvVcVMq9ImhYgcn6tPRDrobFxEMslw2nFAAAsGzTmTntEVT4251FaxFS+OOdXxEIcSu26bbIm56Xk0331hP3mifripRuSSO0+A+9EOUpSiXQFuKCs2EY+iKOre60dqnk29Ix9o/wColJ1icRtjCrw3Mx7Jeg6oq3lNnt1GJrhw1wBsvs/mTDD1zeqxQ8/d3qccNNFw9EABIsG4pzJz2iKp8bc6itYiQ9LU4W5S28oWYM0UWwqiqNseG+SFKP8AJ1RR8i/WCaW48uwDCTqAij6Dk5DC0i1Wc4T9OyKay4NKPCKRoWUpEfip336hj+vbBS7V6kgAq0YO1J+W5mPZL0HVFW8ps9uoxNcOGuANlp0OCH2bN8mGmi4eiAAkQ27tijZuKcyc9oiqfG3OorWIqXgm3Or4iKRdQ7R7ykG0XVajFSeE9+3x2Kay4NKPDYrhlAdUazuZj2S9B1RVvKbPbqMTXDhrgDZcbLRvJhp0OCMCRghxwum6mGmg2NxTmTntEVT4251FaxFHyszNuFmVttOPR09ECTXJUKuXWbSEK1ExUnhPft8dimsuDSjw2K4ZQHVGs7mY9kvQdUVbymz26jE1w4a4A2ccONlo3kwt1T29ENNBsbmnMnPaIqnxtzqK1iKnLSiacUo2AJ8RE8+3MUc840bUlKsPYYqTwnv2+OxTWXBpR4bFcMoDqjWdzMeyXoOqKt5TZ7dRia4cNcAbOKC+VqupELbU0byYadDg3NOZOe0RVPjbnUVrEUbRz9Iulljt0QqSMjQ7kuTbdQrUTFSeE9+3x2Kay4NKPDYrhlAdUazuZj2S9B1RVvKbPbqMTXDhrgDYJshxxTyrqYaaDYjHDjZaN5MNOhwbinMnPaIqnxtzqK1iKpTDcvMuOPKCU3eXSIm5pubox55k2pKVajFSeE9+3x2Kay4NKPDYrhlAdUazuZj2S9B1RVvKbPbqMTXDhrgDYd4BiVG9JiYFtmGCnfDDmjHEtwzuKcyc9oiqfG3OorWIoqi3KTeLLZAswm3NDskmRolyXSbbqFajFSeE9+3x2Kay4NKPDYrhlAdUazuZjA0rQdUVfcQ3SLS3DYMOPQYmaQlSvA6n4hDdIyYQPxU/EPnH+Sk+dT8Q+cO0jJlB/FT8Q+cS1IyiU4XU/EIcnZJzG8n4hBm5EkHbk/EmP8nJ88n4h84bnJJCr23J+IfOP8nJ88n4h84/yUnzqfiHzhmZZft2pYVZmIMU5k57RFVnENzSys2bw49Iip7qGptZcUBveXSIpSbYVJPJSsW3VcozGKmPNtKeLigODjNmePTZfnB7xFMuoVTQWlQItRh90emy/OD3iK2OIcngUEEXRi0mAQoWjcPN7a2pvOCI9Rzz/d80eo55/u+aPUc8/wB3zR6jnn+75o9Rzz/d80eo55/u+aPUc8/3fNHqOef7vmj1HPP93zR6jnn+75o9Rzz/AHfNHqOef7vmig6E/wASFi/evWclmK3pOeJ+V9MllsW2XhZbAqPnf7vmj1IHP93zR6kDn+75o9SBz/d80epA5/u+aDUlINm393zQKkJP/v7vmj1IHP8Ad80S7W0tJattugD3blD5Uu7CnyHLkNv31XTHpCrt6yHHrALvLDrhbTbBmLFAWRt1iik8keknGRghb5vXUC2PSN5eAhL6rQFDHHpCsNgxQZnALowwl84QoYY9JVZeIwQ49cSFDlhL1qL5gTJxqGCJm6FQFpabBEJfN66obpOBy3pjG5b0wneqvdMMpvNqEMb9Yt5ImuBCxaeyCq8VHo+UIQFtAGGRY6oR+Q6YKg4pITCFhN+2G+EmHPaH75I2wbXc5YWnChEJP4ahCWw42kGHRecIzCFG1oQ9wkbojeqPTCRZchCbyFQhd1oxd2lSTE1wIQLXLOiEDhCNtutAJOGG1XHDej8hPTDosuEQwhKlKvQ9YlxJ5IWbziiIsG02wm8pQu5owi8kwp3eJSk4YSFqUopj8lnTDigtabu62tOKyNrTgwQEJGKNqRmhSEq4UKQFCwwEJBtEBCQbbIDKAbbIU2lfCEFtNl2yChKsYhKEpxQpAVgVAbSBYBG1psu2YIShKcIEXE23rIQ2Qu27ZCUJTija05oS2lOED/mv/8QAPBEAAAQDAggLCAMBAQAAAAAAAAECAwQFETFxEBIgITI0QcETFSIzUXKBkaGx4RQjNVJTY9HwMEJhUED/2gAIAQMBAT8A/wCaRVzEIWTvPcpzkl4h6Qli+6Vn/wBC0KbUaVlQ/wDzwUqciSx1ZkgkwctTU7e8xEzp13ktckvETCKOFbJwirnD0OxM2uEbPP07jDjamlGhVpZTSSWtKT2mI6CXCLodmw/5UpNR4qRES32aGJS9IzLsE0eVCw5E1m2AiU4rpMxCSVa+U8dC6Nonmrlf+RJ3VIiSSVihPEEmIIy2llM5nE3kH2EPoNtywRkGuEcxVWbD/jSk1HQhLJaUMXCOaXkJzzKesW8R0GUWlKDOhEdQbkHLU0K3xEVNnn+SnkpE81cr/wAiVa2jt8jE+59N2/Ka003iKf8AZ2jdpYFJZj2ekj8BFwq4VzEX/CRGZ0ISyWlDlwjml5B2ZEqJRDtdOc9wnXMo6xbxOX3GWSNs6VMNtuPKxUFUxCyT+0QfZ6ieauV/5Eq1tHb5GJ9z6bt+U1ppvE11Rf7tEDHKhF1/qdpB1pmPZ/w7DETDLhnODXlkVcxCWSzgC4V3S8vUTWZ0qwyd57hLtaReJ1zKOsW8RcGmLSSV2EdQ5GwsAng2yz9BbzETMnonMZ0LoITzVyv/ACJVraO3yMT7n03b8prTTeJrqi+zzIEVSEBHqg10PRO0hEMNR7PkYiIdcOs23Mm0SyWcD713S8vUTSZ4tWWTz7TwS7WkXidcyjrFvE7cUhgsU6VMMQzsQrFbKohpM20WPEHXyE81cr/yJVraO3yMT7n03b8prTTeJrqi/wB2hNgMqiXTBUIrFVomIqGbjmvIw8ythZtuFnyJXLOC988XK2F0eomkz4OrLJ59p9ASW0wq0xLtaReJznZR1i3iJhm4hJE7YWcPzWHhU8GwVbrBERr0SfvD7Ngnmrlf+RKtbR2+Rifc+m7flNaabxNdUX+7QmwY1DBlUS2YnCqxF6J+AjINuNbzW7DDzS2VmhZZywSuWcHR54s+wugTSZ8F7lk+VtPo9QRVzmDOgtEu1pF4nPMp6xbxPVGTCadIhoF6JP3ZZunYGJXDwieEfOp/7YJ5q5X/AJEq1tHb5GJ9z6bt+U1ppvE11Rf7tCbAdoSoGVRLZkcMfBuaPkI6BRGIqWlsMS2VcGfCvln2EJnM+B9y1peXqCKucwZ0FuCXa0i8TnmU9Yt4iWmXE1esLOImdNtliQ5V8g9EuPqxnDqJtHsvo4JvPnEK/wCzuk7StBMYxMWtK0lTNlNaabxNdUX+7QmwHbgSoKKolcz4A+Bd0fL0EymhMlwbJ8ryBFXOYM6ZEu1pF4nPMp6xbxPuYTfuMKSabQzDuPnitpqIaRkXKfPsL8hEHBmiqUJp+7REyVCyxoc+zYHmHGFYrhUyWtNN4muqL/doTYDtwpUFFUEkGdMmXa0i8TnmU9Yt4ieBJOM9ShdIi3ExkX7uw6EQiYhuWspShNwiZg/E5lnm6BAfDjuVvENHvQ2geboBGiZwpmZZ/I8lrTTeJrqi/wB2hNgO3CZUCVAzpgMqZEu1pF4nPMp6xbxPS9ym/cYhUKREtpUVOUXmJ/ot9u7BAfDjuVvwSTVjvPdktaabxNdUX+7QmwHbhI62gypgIqZzBnXIl2tIvE55lPWLeIl5plOO8DfTER6XE2GpO4T/AEW+3dggPhx3K34JJqx3nuyWtNN4muqL/doTYDtyCOopigzrky7WkXic8ynrFvE8SamUEnp3GIdtTcUhKyoeMnzE/wBFvt3YID4cdyt+CSasd57slrTTeJrqi/3aE2A7cjFoCOuYGVMmXa0i8TnmU9Yt4ioluGRjuAn/AGiOS7SlVJ3Cf6LfbuwQHw47lb8Ek1Y7z3ZLWmm8TXVF/u0JsB24SKloM64COuYwZUyJdrSLxOeZT1i3idNqdaQlBVOu4wyypmLQ2u3GTuE/0W+3dggPhx3K34JJqx3nuyWtNN4muqL/AHaE2A7cBWhYThVZkS7WkXic8ynrFvEZGJhG8dRVCHziI1DplSqi3Cf6LfbuwQHw47lb8Ek1Y7z3ZLRe8TeJklS4VSUlU/UJhXqaB9xg4V+ugfcY9lf+Q+4wUK/XQPuMKhXvkPuMFDPl/Q+4x7M/8h9xj2V/5D7jBwz5/wBD7jHsr/yH3GPZX/kPuMLaW3ppMhLtaReJulS2Ukkq8ot4naFLZSSSrn3GIRhwn0GaTpjFs/0T1tSyRilW3cPZ3fkPuEChSYA0mWeih7O78h9wkyVIhzJRUzgypmPIbXiKJXQOP/t+PoOP/t+PoOP/ALfj6Dj/AO34+g4/+34+g4/+34+g4/8At+PoOP8A7fj6Dj/7fj6Dj/7fj6Dj/wC34+g4/wDt+PoJhH+2YvJpQQz3AOpcpWg4/wDt+PoOPz+n4+g4/P6fj6Dj8/p+PoOPz+n4+g4/P6fj6Dj8/p+PoOPz+n4+gdXwizX05JpzDFzA00GKCIEVRiimYYoxekYucYoxRijFGLsBFUUz0GKEilTGLlbBswHaFZiCbQWAzoYVYNosBg7AVgpnqC2mNorQwVg2hNn8G0GWcWhNoOzBTODzkNpAgowVgsIV5Q2YKZxmoNoLMWVUVFRU8NRUVMVoKiorgqKioqDPNgqK/wDa/8QASxAAAQIDAwgFCgQEAwcFAQAAAQIDAAQFEBESBiExNDVRcXITMDNBgRQiIzJSYXOhscEVIEJTYoKR0SRAokNFUIOTwuEWJVRjcET/2gAIAQEAAT8C/wDxFKSo3JBJ90eQzN1/QqhaVINywQff/wARQlS1YUAk7hErSFqzvnCNw0www2wm5pAFk1LNzKMKxwO6JuVXLOXL0dx3/wDDkJUtWFAJPuiVpK1Z5g4RuGmGGG2Bc0kCHXUNJxOKCREzV/0y6f5jYJhBmFM3+eIeaQ82UOC8RPyS5VW9vuV/wynSRmlXnM2NJhiXbYTc0kCHXENJvcUEj3xNVfulx/MYddW6rE4oqMDTZVyU1FRSbiLoptRD1zb2ZzfvhaEuIKVi9JiflvJnyn9JzjrGkFxxKE6TmhaShRSoXEd3+cYZW+4ENi8mJ1joJjogb7rolWgwwhsdwip1Ay6ujaux953Q66t1WJxRUffbLSzr6vRpv99lZ19fAWUqY8olvO9dOYxW2scpj70HrJDXWeYRUpETKcSMzo+cKBSohQuI/wA0w0t5wIbF5MSUqiVbuGdR0mKltbxTZVNfd42MMOPqwtJJiVpKE+c+cR3d0JSEi5IuFlZ19fAWZP6XvCKpqLvDrJDXWeYWVOR8oT0jfaj5wRcbjp/zDLSnnAhsXqMSMoiVbuGdZ0qsqO1vFNk80t2pOpbSVG+JSkAedMG/+EQhCW04UJAETM01Lj0is+7viaqjrpub9Gj52VnX18BZk/pe8Iqmou8OslNaZ5xbVJDph0rQ9L3j2v8ALstqecCGxeoxIyiZVu4Z1nSq2obXPMn7WBIF9w06YfmGmBe6q6JuqrXmY8xO/vgkqN5N5gabKzr6+Asyf0veEVTUXeHWSmtM84sKgFAE5zosqkh0oLrI9J3jf/lWm1OrCEC9RiQk0yre9w6VWNTaXZtTLefCm8myobXPMn7WVGpONuqaaF136oWpS1Ylkk7zbKU558gkYEbzZWdfXwFmT+l7wiqai7w6yU1pnnFldUUpYUk3EGKbPCZThVmdHzsqshiveZHnfqTv/wAm2hTiwlAvUYp8mmVRvcOk2VWoaWWDzKig62vksqG1zzJ+1lU197jZKSD0xoGFHtGJSnsy+e7GveY0WVnX18BZk/pe8Iqmou8OslNaZ5xZlB2bPEwhRQoKQblDvinTomkXHM6NIsqtP0vMDmT/AJFCVLWEoF6j3RTpISqLzndOk2VWoXXssHP+pVlB1tfJZUNrnmT9rJmTemag7gT5t/rGJSmtM51+kX77JqpMs5k+kX7omJx6YV56vN9kWVnX18BZk/pe8Iqmou8OslNaZ5xZlB2bPE2NrU2sLQblCJCcTNN7nBpFlVkLr3mBm/Unr0JK1BKReo90U6SEqi9Wd06TusqtQwXssHzv1K3W0HW18llQ2ueZP2tmqgzL3i/EvcImp96Y0nCj2RYNNlZ19fAWZP6XvCKpqLvDrJTWmecWZQeozxMZOISupBKwFDArMYrdLMkvpGs8ur/T7oZcUy4Ftm5QiRm0zTd4zLGlNlVkOjveZHmd43dalJWoJSLyYpsiJZOJWd0/Kyq1Do72WT5/ed35KDra+SyobXPMn7WVWce6dbIVhQN1qEqWq5IJPuiUpKj50wcI9kWVnX18BZk/pe8Iqmou8OslNaZ5xZlB6jPExkxtVPKYcQlxBQ4ApJzEGKzS1SLmJF5l1aDu90MOrYcC2zcoRJTSJprEnMrvG6yqSHQkusj0fePZ6tKSpQCReTFNkRLJxLzun5WVSodFe0yfSd53WOS7jTDTqxcly/DbQdbXyWVDa55k/ayqa+9xgAk3DOYlKU455z/mJ3d8S8u1LpuaTd74ccQ0m9xQSLKzr6+Asyf0veEVTUXeHWSmtM84syg9RniYyX2oOQ2PNoebU24nEhWkRV6auQe3sq9VX2iWfXLuhbZz/WJSYRMtY0eI3Qc4zxVJDoD0jXZH/T1IBUbhnMUyREunG5ndPysqk/0N7TJ9J3n2bKFSPKCJiZHof0p9r/xGV+iU/m+1tB1tfJZUNrnmT9rHqauYnXFqOFsmJaUalx6NOfeYWtKE4lkJHviaq4F4lxf/ABGHHVurxOKKjZWdfXwFmT+l7wiqai7w6yU1pnnFmUHZs8TGS+1ByG2YZbmGVNOpxIMVWnuSD1xztn1VRKzC5Z3GjxG+JWYRMtBaPEboIChcReDFSkTLKxoztH5fnAvNwimSHQDpHe1Pysqk/wBAOiaPpe8+zBznPFCpHlBD8yPQ9yfa/wDEDNojLD/+T+b7W0HW18llR2t4psUQkXqNwiaqyEZmBjO/uh99x9V7qibBpsrOvr4CzJ/S94RVNRd4dZKa0zzizKDs2eJjJfag5DZUakqQrOfOypAxJ+8NOIdbS42rEhWcERNS7cyypp5N6TFTkHJB/ArOg+qrfEpMrlncaPEb4l3kPtBbZzQpIWkpULwYqUkZZeJOdo6Pd+UZzmilyHQAOOj0u72bKnP9AOja7X6QTebzpihUjykh+YHoO4e1AFwuGiKhOtyLBcd0/pTvidmnJx8uvHP3DdbQdbXyWVLa3imyrOrVNuIKjhScwtl5d183NJv98SlKQ35z3nq3d1lZ19fAWZP6XvCKpqLvDrJTWmecWZQdmzxMZL7UHIbMqdp/yCKLVFSLmFd5YVpG73w2tLiAtBCknOCInJVubYU08Mx+UVCSckXy25o/SrfElNLlXcSc6TpTvhl1DzYW2b0mFpC0FKxekxUZNUq5mztHQfyUuQ6G514ek7h7NlTnhLpwN9qflBJJJOcxQqSZoh+YFzA0D2oAAAAzCJ+cakmC474J3xPTbs6+XXTwG78lB1tfJZUtreKbKpr73GGWXHlXNpKolKSlNypg4j7IhCUoThSABEzNsy/rq87cLKzr6+Asyf0veEVTUXeHWSmtM84syg7NniYyX2oOQ2ZU7T/kFlEqhkl9G7nl1f6YSoLSFJN4OgxPyjc6wW3RwO6J6Uckny06OB3xIzapVy8Z0HSmGnEvNhbZvSYdbS6goWL0mJ+UVKub0HQqyl0/ornXh6TuG6ypTwlk4EZ3T8oUSpRKjeTFDpJm1B58XS4/1QAEgBIuA7on5xqSYLjp4DfE/OOzr5cdPAbvy0HW18llS2t4psXTUuzS3XVeaf0iG20NpwtpCR7omJlqXTe4rwiaqrjmZr0afnGlWeys6+vgLKAoBTt5Avuiqai7w6yU1pnnFmUHZs8TGS+1ByGzKnaf8gtoVW8lV0L59AdB9mAbxeM4ioyTc9LltzT+lW6JyWclHy08LiPnFPnFSrm9s6RDa0uIC0G9Jh5pLzZQ4L0mJKmpl3StZxn9PusqU8JZOFGd0/KFKK1FSjeTFDpRnF9K9mlx/qhKQlISkXJGgCJ6bakmC66eA3xPzjs6+XHTwTu/NQdbXyWVLa3imx99thOJ1QETdWWvzWBgG/vhSio3qN5sETNX7pdP8xhxanFlSzeo99vlT3RFsrJQe49ZKa0zzizKDs2eJjJfag5DZlTtP+QfkoNX8nIl5k+h/Sr2f/FlUkG59jCrMseqrdEyw5LPKaeTcoRTp0yq7lZ2jpEJUFJCkm8GyozolU4U53ToG6FqK1FSjeo98USlKnV9I7mlx/qhCUoQEoFyRmAETs03JsF145u4b4qE67PP9I7/ACp3fnoOtr5LKltbxTZVNfd4/mlqa+9nIwJ3qhuky6R5+JZ4wqlSx0BSeBiapTredr0ifnBzHP1cprTPOLMoOzZ4mMl9qDkNmVG1P5B+WgVbosMtMq9H+hR7vdZVacifZuPmuj1VRMMrl3lNOpwrTFNnzLHA5naPyien0MNDoyFLV6sLUpaypZvUe+KLS1Ty8bl4lxpPte6EIS2gIQAlIzACJyZblGC68bgPnFRnXJ5/pHNH6U7uooOtr5LKltbxTZVNfe4x0DnQl3D5m+wAk3DOYlqU65nc9Gn5xLSTEv6qb1bzBNwvMNTLTq1JbViKdMLWG0FSjcBCFJWm9BBETMmzMeunzt4iapjrOdHpEe7T1UprTPOLMoOzZ4mMl9qDkNmUu1l8B+agVe7DLTSvchZ+llYpqZ9nNmeT6qvtDra2nFNuJKVpzEWUWlqnnMa70y6dJ3+6G0JbQEIASkZgBE3MNyrBdeNyR84qU85Pv415kj1U7upoOtr5LKltbxTZ5CyZhTyxiUd8V9VzDSN5spsmmXbClD0p0ndC1JQL1EAe+JqrNozMjGd/dExNPTHaKzbu6KB2jvCKjqL3LEvMOS6r2lXe6JSqoX5r/mK390AhQvBvEVmTGHp2xzdTKa0zzizKDs2eJjJfag5DZlLtZfAfnoFXxYZaaVn0IWfpZWqWmebxIuD6dB3+6KVSHZp89OkttINyv7Q2hLTYQ2kJSMwAiamG5VlTryrkiKpPuT7+JWZA9VO7qqDra+SypbW8U2Tc81LZicS/ZETs2ubUCoAAaBFMQFzzQO++yemFvzCio5r8wtoHaO8IqOovcttDeUHy1+ki+HUhbSknQRd1MprTPOLMoOzZ4mMl9qDkNmUu1l8B+ZxCm1lDgKVDSDZQKt0wEtMq9L+lR/VbMvtyzKnXlXJEVSoOT72JWZseqndZLMOTLwaZTeowoYVEbuooOtr5LKltbxTZVNfe42UjaDXj9LHO0VxtoHaO8IqOovcttF15PAwdHUymtM84syg7NniYyX2oOQ2ZS7WXwH5qxS0zzeNFyXxoO+HEKaWUODCoaQYGY5ooVWE0kMTBufGg+3Ew83LsqceVhQIq1RXPvX+q0n1U2SzDky8GmU3qMUuntyDNwzuH1lQ92y+Y9RQdbXyWVLa3imypi+oOgab4el3GQkuJw4tEUjaDXj9LHO0VxtoHaO8IqOovcttF15PAwdHUymtM84syg7NniYyX2oOQ2ZS7WXwH5qXUG59jEnMsesndFZpaZ5GNHmvjQd8ONqacUhwYVDSIBKSCk3Ed8Ts/MToQH1XhI0D62Ssu5MvJaZTeoxS6e3IM3JzuH1lRWaoiRbwpuU+rQN3vgm83nqKDra+SypbW8U2JYbS6pwJGM98ZQesz4xSNoNeP0sc7RXG2gdo7wio6i9y20XXk8DB0dTKa0zzizKDs2eJjJfag5DZlLtZfAfmlZhyVeS6yq5Qil1BufZxJzOD1k7orNLTPN4kea+nQd8OtqacKHElKhpBslZdyZeDTKb1GKXT25Bm5Odw+sqKzVEyLeFHnPnQN3vh1xTriluKxLOk9TQdbXyWVLa3imyeqSWFlttOJYiYfcmFYnVXxSNoNeP0sc7RXG2gdo7wio6i9y20XXk8DB0dTKa0zzizKDs2eJjJfag5DZlLtZfAfnlZhyWeS6yblCKXUG59m9OZwesndFZpaZ5vEi5L40HfDUm+5NeThB6W/ON0UuntyDNyc7h9ZW+KzVEyLeFFynzoG6HXFOuFbhxKOknqqDra+SypbW8U2VTX3uNlI2g14/SxztFcbaB2jvCKjqL3LbRdeTwMHR1MprTPOLMoOzZ4mMl9qDkNmUu1l8B1ErMOSzwdZVcoRS6g3Ps3pzOD1kxgTjK8IxHNfFZqiZFvAjzn1aBu98OuKdcK3FFSjpJ6ug62vksqW1vFNk80t6pOpbSVG+JuUVKhGMi9UUjaDXj9LHO0VxtoHaO8IqOovcttF15PAwdHUymtM84syg7NniYyX2oOQ2ZS7WXwHUMMuPrwMoK1bhEtJVKWeS6yw4FCJKZ6dFziejfA85B7orNLTPN4k+a+NB3+6HW1tOKQ4kpWNIPV0HW18llS2t4psAAvuGmMoPWaikbQa8fpY52iuNtA7R3hFR1F7ltouvJ4GDo6mU1pnnFmUHZs8TGS+1ByGzKXay+A/PKy7k08lpkXqMUyQbkGcKc6z6yt8VmqJkUYEXKfOgbobm3m5ryhKz0t99++KXUG59m8ZnB6yYrFLRPN4k3JfGhW+HW1tOFDicKxpHVUHW18llS2t4psqNRcbdU00MN36oWorViUSTvMUjaDXj9LHO0VxtoHaO8IqOovcttF15PAwdHUymtM84syg7NniYyX2oOQ2ZS7WXwH5pSXcmng0yL1GKZINyDOFGdZ9ZW+K1VEySMDdynzoG6HFqdcUtwlSjpJsln3JZ5LrKrlCKVUW59m8ZnB6yYrFMRPN4k+a+nQd8PNrZcU24nCtOkdTQdbXyWVLa3imyqa+9xspG0GvH6WOdorjbQO0d4RUdRe5baLryeBg6OplNaZ5xZlB2bPExkvtQchsyl2svgPyysu5NPBplN6jFMkG5BnCjOs+srfFZqiZFGBvPMHQN0OLU4srWSpR0k/kln3JZ5LrKrlCKVUW59m8ZnR6yYrFMRPN3p819OhW/wB0OtrZcU24nCtOkdRQdbXyWVLa3imyZk3pmoO4E+bf6xioyYlA2MWInTFI2g14/SxztFcbaB2jvCKjqL3LbRdeTwMHR1MprTPOLMoOzZ4mMl9qDkNmUu1l8B+XJTaKvhn6iKm+qWkHnW/WSM0OLU4srWb1HSTY0y10SPRo0ezEu2j/ANSTScCcPRDNdwiqstimzJDaL8B7rJZ9yXeS40q5QhhfSMNrP6kgxlBteY8Pp1FB1tfJZUtreKba64hbjYSoEp0xSNoNeP0sc7RXG2gdo7wio6i9y20XXk8DB0dTKa0zzizKDs2eJjJfag5DZlLtZfAflyU2ir4Z+oiu7JmOH3tQzWMCbphm67dDLdQ/GX0pdb8pwecruuzRPNVUSbxefaLeE4gBbJ6oxyD6RlBteY8Pp1FB1tfJZUtreKbKrOPeULZCsKBuspG0GvH6WOdorjbQO0d4RUdRe5baLryeBg6OplNaZ5xZlB2bPExkvtQchsyl2svgPy5KbRV8M/URXdkzHD72t1KTDaf8Q3o3wxOS4ygmXi8nolNgBX9IqVQlHKfMIQ+gqKCAL7ZWelRKsgzDV4QP1RXFpcqj6m1BSTdnHDqKDra+SypbW8U2VTX3uNlI2g14/SxztFcbaB2jvCKjqL3LbRdeTwMHR1Mnnm2ecWVlhx9DfRJxXGKBLuy1QxvIwowkXx07ftRXZZ2YqK3GUYkXDPH4fNfsmPw+a/ZMfh81+yY/D5r9kxk6w5LTylvpwJwXXxVlB+nPNtHEtQzCPw2b/a+Yj8Nm/wBr5iPw2b/a+Yj8Nm/2vmI/DZv9r5iPw2b/AGvmI/DZv9r5iPw2b/a+Yj8Nm/2vmI/DZv8Aa+Yj8Omv2vmI/D5r9kx+HzX7Jj8Pmv2jbQdbXyWT8u6upY0tqKbxnsqEq+ucdUhpRSTpujyKZ/ZX/SKZLPNzzaltKCRfnu91jknMY1ehXp3R5FM/sr/pHkUz+yv+kUVh1pxzpEKTm74nklco6lIvJGiPIpn9lf8ASPIpn9lf9IpMs83OBTjaki45yIOiFpKFFKhcR3dRIa6zzD/Mq9U20HW18n9rLxvi8bxF43iLxvEXjeIvG8ReN4i8bxF43iLxvEXjeIvG8ReN8XjeIvG8RUtee49Ted8XnfF53xed8XnfF53xed8XnfF53xed8XnfF53xed8XnfF53xed8XnfF53xed8XnfF53xed8XnfF53xed/5Lzv6plpb7gbaSVLPcImadNyycTzKgneM8TEq9LhBebKQsXi/rUyc0tIUmWeKToIQYdacZNzra0HcoXQyw69f0LS3LtOFN8LlJltJU5LvJSO8oMCSmiARLPkchhxCm1lLiSlQ7iIVJzKUYlS7wSM95QYElNEXiWfu5DBzHPCJSZcSFNy7yknvCDBBBuOYiG5WYdTibYdWnelBMJlX1LUhLDpUnSAk3iHZV9pOJ1h1Cd6kkQ1LvPX9C045d7Kb4cbW0rC6hSFblC6G5V91N7bDqxvSkmHWXGTc62tB/iF1gkppQvEs8RyGFpUhWFaSlW4w3KzDqcTbDq070oJjyGb/APiv/wDTMLSpCilYKTuMJk5paQpMs8UnQQgwZKaAzyz/AP0zY0y692Ta18ovh2WfaTe6y4gb1JIhptbqsLSFLVuSL48hm/8A4r//AEzDsu+yL3WXED+JJFiJSZcSFIl3lJPeEGHZd5kAvNOIB9pN1iJSZWnEiXeUneEGHG1tqwuIUhW5QujJ6calJo9Kk+f5oUO6GKkVrUHZOaaHcejJvjKSoJfwy7YUAk3qxJugAqNwF5jyKauv8mfu+GYOY5+qpWzZX4Y+kZXN+dLucRGSSLpV5e9d0V/ZL8SeqM8gjKtnBOod7lp+kVHY7/wvtGT0x09NR7TfmGKxKlqrONpHrm9PjDpTT6Wbv9mi4QTebzGTWyW+J+sUzbVS/lisM9PTX0d9148IyR7KY4iHpNM3lGoOC9tCQoiJ6eYp7aS7fnzBKRH+Hqcl7bS4yfpqW3XnXhepC8Cb/rE3VpWVmQy6VYu+4ZhFZkkTkmo3ekSL0qjJzZDPFX1g1iWTO+SqxpXfhvIzRlBKIfkHHLvSNjEDFK2bK/DH0iVq8tMTXk6caXNHnDTFcpiZl1lxAwqUvCvhCixTpO+7A0jdEjOsVBpRavu0KSoRLSiZPKPC3mbUgqEVGebkGkuPBZBOHzYlZhmflsaPOQcxChFXlhK1BxtPqaRFNR0VPl07kCMqW8VOCvYXGTEmh99bzovS3oHvifqcvIqSl7FiV3JETsuzUZHuN4vQqKQ3jqsugj9X0syoRhqWL2kAxk5JIZk0vkelcz37hCatKqnfJgpWO+6+7NfGU0khcqZlIucRp946qmG6mSx/+sfSMqm8VPSr2Vxk8no6Q2T33qiv7JfiWVgkW1HQGwflGVDPSU8ODS2q+Kjsd/4X2jJSYwTS2ToWLxxibkg9UZV/9u+/7RlZMYZdtgaVm82ZNbJb4n6xTNtVL+WLwoqTujJ5roHp5r2XIltvTfw0xlf2ktwVFBqErL05LbzyUrvOaKY4h1t1bZvQXDcYr21pjj9oTqg5PtGTmyGeKvrFQ26v4oiq7Mmfhn6RS9mS3wx9Ipu3kfEMP/7PmEZT7LVzCMkPWmv5fvD+3Zb4Soyt1Fr4n2MZJai78T7CMoU9JWgjfhETznk0pi3FI+cVtHSUuYH8N8ZI6u/zRlVtMfDEU2rSTMgw249ctKbiMJjJ1IcrDix6oCjCnrqghne2VfOMrm9Xc4pik7MlvhiGdro+P/3RWtlzPL1UnsVr4P2irDp6K6f4McNf4ekMJO5Kf6xX9kvx/un/AJP2hr/H0XPpW3d4xUtkP/C+0UwrTUJct+tjFmUqlmqKC9ASMPCzJrZLfE/WKZtqpfywh7DXHGT+poKEMtYJyYUP1hJiW29N/DTGV/aS3A2ZMbLTzGK9taY4/aE6oOT7Rk5shnir6x+ESxnTNKxqWTiuJzRlPMuNSnRIQrC5mK+7hFL2bK/DH0iRorrNS8odcRhCioBMTbyUPyzX6lr0eEZT7LVzCMkPWmuCfvD+3Zb4SoqMi3PtJbeKwAcXmwwwiRlCiXbUoDPd3mJRa52vIW6LlFd9266MqXMFPSn2lwPTyI/jb+0ZJC5iYB9uMqdpj4YsyRb1hzgmHn7sqWk92DBGVLeKnBXsLEUnZkt8MQztdHx/+6K1suZ5eqlNiNfA+0Uv/E0Vob0YIrKujYlke08gRX9kvx/un/k/aMlHsUo40f0Kv/rFW2ZM/DMZLS/STxdOhsfOFTaRUUyveUYoytl70NTA7vNNmTWyW+J+sUzbVS/lipvdBlJLr7rgDZLbem/hpjK/tJbgYo9Gl5ySS86t0KJI80iKQymXYW0i/ClwgXxXtrTHH7QnVByfaMnNkM8VfWJmoTLFbWEur6PpLsBOa6Ku2HaZMAi/zLxFL2bK/DH0h/KCbS4tAQzmJGg/3ilzDs1W5dx9eJV/2jKfZauYRkh601wT94f27LfCVGU7zjMm0WXFoPSaUm7ujJ2bcmpI9McSkKuvhqXAyncUBm6PFFdp78+GgypsBN9+IxINLYk2mnLipCbs0UNHRPT6dzsZU7THwxFOo0m/IsuuJVjUm8+dGTjIalHLtBdMO0maVWPK0raw4wbrzfd/SK0jpKXMD+G+KTsyW+GIZ2uj4/8A3RWtlzPL1UpsRr4H2jJVzFTin2FxlCv/ABdPb/8AsxfOK/sl+P8AdP8AyftGTD3R1HAdDguirbMmfhmMnJfoKalR0uedD88fxvykaEr+UVBkTcg42P1JvFmTWyW+J+sUzbVS/ljKnaY5BEg908ky57SYadCMpHkH9bYuivU1yfDRZUkKR7UUuVMlIoaWoEjOTFFm0zPlOE6HSfCKpRHZqfU82tAQvTf3RNuJlpFxSjmSiMnNkM8VfWKntt34kT2ov8hil7Mlvhj6RM6w7zGKS6GakwtWgKirShnZJTSCArSL4oVNXIJdLpSVr9mFPBzKRtCf9m0b4yt1Fr4n2MZJak98T7Qy3/7pMufwJTFYrL8nOdCylopuv84GKJPLn5ZS3QkKSq7zYlVJbq0213rCXBFapC559DrTiUm7CcUICZGQAUrzWkaYpXmU1onNeMZ8c8KyjmsRwtsXcD/eNYlOdEURwLprI70DAfCG6E6mp9MVo6ELx++Mong1S3AdK/NHVN1yZblQwEM4AnBoN/1inVN6QSsMhBCvaETlSemplp5wICm9AGiJutzM1LqZcQyEq3A/3j8dmfJ+hwM4cOHQf7ww6ph5DqPWSbxExXpl9hbS0M4Vi43A/wB4/HproeiCGUpuw5gf72MV+aZZQ2EskJF15Bv+sOr6R1S7gMRvuESNZmJOXDLaGike0DDFXfZmn30oaxu6bwbon5xyef6V0JCrrvNiRrMxJy4ZbS0Uj2gYmp12Zm/KDchz+CGMo5hCbnW0OHfoierczNNlsYW0HTh0mJWZdlXekYVhVCcpXsPnMNk+4xUKnMT2Z0gI9lOiJKtTEnLpZbQ0Up9oH+8TD6n5lT6rgtRvzQvKCaW2UKbYuIu0H+8MV6aYYQ0lDOFAwi8H+8LVjWpR0k32SVdmZZAQoJdQNGLTD+UUwtFzSEN+/TEnOuys106blOfxxUaq/PtJbeS2ADi80GKdVH5BCkMpbIUb/OEDKGaCiejYvPuP94nJhc3MKecuxK3RTqm9IJWGUoIV7QibqL8zNIf81DqcwKIpFVdeJanMKXDmbJSRiMZQLnxgROKR0atAb0R+PTXQdEEM4cOHQf72S9emmGENJQyUoFwvB/vEpUpiVfW40R55vKe6P/UruHsEX8Ynp16dcxPq4AaB/wANQooUFDSDfBr4cDfTyaVrQbwcd2eKrUl1BaSpAQlOgX//ALB//8QAKxABAAEBBwMEAwEBAQEAAAAAAQARECExUWGh8EFxsTCBkdEgwfHhQFBw/9oACAEBAAE/If8A4jW7XQVguE7/ABFJV0FH/wBEQl4BVlAnp3YHq+9iG9dHGKWqvBw/84IS8ASm/N59TVpXq+87nZZfcTkWXUBjR63dIaF9pUN7P+D/AOYvq+/NCa2q9X3ndFCXzzvQmt2VmB3sUIBCdLoAgwjo/wBwghKIxjat86epRQr0Vi0nUV0/7NoojVguqlezUgkZnfrCBJlUhPmzaBjit6uD3s4jKF2Eca6r3smFcMZXRx9Ths5cOFc+LHSKoj0/6vC8Ws871/5OBoWbF4LKlLn0O7KborxWByBgBSziMrNv+842vqcNnYaCBfHLvEQEFyPT/prg8jBf5Y69viLKWorjsSgVb2fdhwT6BLvGU3qfAsxe9nEZWbf95xtfU5nMtFqIcGsRFEon/Ms3AEu+e+u2lvIZWE0AqqOsps5Dq+0q5azF9RwpMVmB3s4jKzb/ALzja+pzuZYEwrUZ0swxl583xub/APkS3dAJSxT+SNLKNBTU1Ch82chlYJ87qr32ihLxSrbvBJ7FnEZWbf8AecbX1OdzLGxKonSXHRXnkWd+4Nxr/wAavG0AlVtD/wCZZR7aHgm8+SzkMrGweCxEfhH2lE8T9iKCqgWcRlZt/wB5xtfU53Ms4jKP8ZUHSXFQ9zUsrd9Dyf8AC6xlAS4iXsaFnY6DpoWbz5LOQysXQ1CtwYEo5amA7EuDIjq9Dorj3mGiq64LOIys2/7zja+pzuZ+AHdJqJK3u/pzSzv0B01PXWkygOsu5A+gWdgINhbvPks5DK1hQuaxpOI352YHeziMrNv+842vqc7mWcppGckEKmEXgsueqzfpnRmCeDwv8sr7y3nv7eq1JVAOsuOivfAsocint7/hvPks5DKxeNGnQt1oh7wBGz5APeziMrNv+842vqc7mWcppODyh+T6Ay+8n308pwaMwAF2eiCUbxj3gcDi702SKoB1lyoV74llDoz5vi1as68fuKFL+19u8+SzkMrGweCEhUwCURN4+pRBzdT7zviBs4jKzb/vONr6nO5lnEaWpEkCidZdCrv9msoBBidBkwUt+HVUAgBHoxHJUvOMPRMmo0A6yioF/NgioPA4viq1Wqx6Fi9N7xWEBCgW+8+SzkMrBTLocVulLhnvljYJ6qkvh2Td7EvOz1s4jKzb/vONr6nO5lnEZTidLTRBokv3+/8AR1gBdOgMogenUWUcmBRHrGIqv5fzQAVbgOsIwELjL92ClUuDWJRVVvVjNoWrc/aAAAAuA/A958lh+fiLF5AxVoSua58VlSVy6FmB3s4jKzb/ALzja+pzuZZxGU4nSyhatM2NzWEyBmE3GHHM1mcXU7h9wklTDpiV0i6dRyYUIVEesvcrveD+IQAq3AQQZWHDGwnYUXvOMREVXqxGsDf9f1AIABQDpGoqrgxeUr2FcGByLd58lnE0LEpsYXF1tVnP0HvKMugwfdnEZWbf95xtfU53Ms4jKcTpZx+8vFt3uSA7PoCStwwnqsyFXVXhgc5loEnjeCHsJRGVRUntaNoK0CqwRUHwa2KnEv7jMqNVesVgrUf1CRAKAYBHavwLF5EvTWA4HI/DefJZxNCzYPBKi5p0myCB7wQN4AXQTH6L5s4jKzb/ALzja+pzuZZxGU4nSzj97DrLLzNmfshUjVBuSatY8XmS/pYngcyX/PcX+w5OEYFslElHNf5p1gVaGMob2XrzfZXCCu05sVIqqvWMwTcdXl2hlBUAXE0Cx4vImgWPA5H47z5LOJoWV3S1Ox1YTAeglOMegvX2lb74ft0lWola4tnEZWB7goFxxnG19TncyziMpxOlnH72sTl+5+oBKIVE6wIaC8MXOj5T0GZOov6c1guC1EspgOaL04M+9lxwVx5MaEqqvWDgW+7yNNYXIlAXBLslgOLyJptCwOR+W8+SziaFlHly6vYgDqnCVCYq2YiO1pOOEfPjFZhhClx6N56nO5lnEZTidLOP3/BK0tonP0giCNRmaP0719TbYd1NJf2T2NSEgFUTrZd0J9hi0mVV1gMFt71WR9wVpaBcEp+BcGLyIhSgXBgcvz3nyWcTQsa1VaCnx+VBqfhSGKusrQbQuimf2yovoB4QKARMR9PncyziMpxOljG44V9/xrr2Xbq08WXXPY+jpFhIojLwnTddZFolqDCmbHWMqrrKZ1dRZPuELOgXBOjpR1WRH60NwYH0N58lnE0LNg8EKgQeq6vawkKmASl+6X/CUR982AiAGKwm4KowmNGSwU19SE+JMrXfBc9vS53Ms4jKcTpZy+X5dM2KYav1ZUlBu9q0jsgqOll7ENTSh+z6ATd05ZGsedFG3H79HefJZxNCy+qtaYD2lAMKvwf7AVoYwWCH0CKTrqqSqa/Xf6jl+9Ju+E2/zYFSXP0PtKOGhxfUMCTqQqpGt08+jzuZZxGU4nSzl8vz7xKY6v1ZcLb7qCdSalFckOYfQAm5Q7oazJn69w+/S3nyWcTQsr3zk98phknJgP8AgK/qxlFNFS4Ldv8AP4A4VaYZJMddL0edzLOIynE6Wcvl+T+TpiCzBKXbY6+bTYb/AENZfM63u1d7HEbfVld71U9DefJZxNCzYPBZz9dm/wDm3b/P4BzWUxPR53Ms4jKcTpZy+X5XdT0NLHsrp0ESCqJeJBACvOj7gpA1VlTq9R4autjqNvqy7H7/ANO04TP0N58lnE0LECKhQOxOt6A4zn67N/8ANu3+fwDmspiejzuZZxGU4nSzl8vyCdHq3r6l3UegMmNFXROkcoqoGiS7EkBQXNrYjD45qzDFe+5dpcLL7yM14rV9DefJZxNCytFdV4zYRz9dm/8Am3b/AD+Ac1lMT0edzLOIynE6Wcvl+WwQ7ozALddfUuJC+ixNh06CxNHxgzZci6XvX6lxoemM0TMmqdfR3nyWcTQsdRiluCVaGYHQnP12b/5t2/z+Ac1lMT0edzLOIynE6Wcvl+ewx6ZOkuzd5/4lxo/pMoPrhNzpLiXef+Jc6P7TEmrr1Hpbz5LOJoWbB4LOfrs3/wA27f5/AOaymJ6PO5lnEZTidLOXy9BHG/MmXYut7zXtAQCVVN6HSXUBfZRNh1xD6e8+SziaFmTKLsSvcrNDpOfrs3/zbt/n8A5rKYno87mWcRlOJ0s5fL0Lvq1oRmD6X6MQHlLr9XaXHR/eR2w06D0958lnE0LFEA3mhjEU630Zz9dm/wDm3b/P4BzWUxPR53Ms4jKcTpZy+X57dGBm6SnU77/xLup6GtnWxB7HSXY/buppLpI/UY65NE6elvPks4mhYZ5XXE+0WLeKVZz9dm/+bdv8/gHNZTE9HncyziMpxOlnL5fls+YGbNe38V9Rewf2WPBOuIWxwG/0ZcBPj4amku2A+sxSSKJ6O8+SziaFmweCzn67N/8ANu3+fwDmspiejzuZZxGU4nSzl8vx2/WDN0mfbKXr6jikXQ1sX2dcQv4KAf8AOjLgJe3qaS7cD7iOSRROnobz5LOJoWONClW4MD5gSQ2rpOfrs3/zbt/n8A5rKYno87mWcRlOJ0s5fL8nFCK+1Z1pFdvriFsVkfoyj3UCFChIYgpIcrETYd/UYECiGpN94/Q3nyWcTQtEMjccJz9dm/8Am3b/AD+Ac1lMT0edzLOIynE6Wcvl+TjY/C27HoU0fEWTgrF72O0N18YEpf0t5vJN94/Q3nyWcTQsvCjSlyt3Wzn67N/827f5/AOaymJ6PO5lnEZTidLOXy/JxsfhadpID4Q+WpC5enZhAdBeWlpJgKIuui9CoSo3PQ3nyWcTQs2DwWc/XZv/AJt2/wA/gHNZTE9EITi2BLpK06Q46+hMZo40NiAmU/ok/ok/ok/okXCrCzqQJgBgVvJqeWs1PLWanlrNTy1mp5azU8tZqeWs1PLWanlrNTy1ifXy1n9En9En9Mt3nyWdCpou6WXTDAuN1hr3dhXC9YlhRVoxmU1FKKVjUqaDr+BjDmgxIsK7K6ehw2f/AE7C3efNhBvHzP7E/sT+xP7E/sT+xP7E/sT+xP7E/sTSfM/sT+x6Q6j5mo+ZqPmaj5mo+ZqPmaj5mo+ZqPmaj5mo+ZqPmaj5mo+ZqPmaj5mo+ZqPmaj5mo+ZqPmaj5mo+ZqPmaj5tFMJqPmVrj6OHbWAta6gTvStJUxYRj6pgsqiE+IdcyotU94nqIqPiY5RjA96R+YKiUnaYkTqZPaJitUUBnWkHJIqJSdoFAUTEmGUZwfekZioojiMMvuBD5CY2J9dw6TocChPlhKExVqPiMSDFi+GaUxJtAilgL5WEFTBGPEVAmI0SHX3Ag+4Tmv6ggTiFEhgsqiE+IsRB1foiUUbmOI6Y16PiaKvJvOr4KhfBOe/qaoWE3swyzOD70l1hQXq+bBShgoO01EgFvKl9IJV0Uxvh4i3px7FSKVeEzrS4o3wypLgCqzfJ/hAoBEuR9Na6hdRdk/crEYXwP8AZsDyTlcpQbonvwTeIoNa7BhtMINlxnWYJDvjT7jMlVarOPzTcRTgqKbW9Oeymo6EsiUjR1IiVFAF1S8f0kJS9RYUioFaVVKucpW1/XduzOQzxiJLqX/mu0ZhwzvoYliysKxFCiMqLDlCMdV17xdQPgMftgeIdRSmChnLMlCi8EWtF6plKcfpkSXS9XbGVxxqPiZ1g/N0FjS1sKuvtG+V5eKGbOgm7940uSY4RWny/VmHrveMIQtG99gJ74i3JWEjUVh8npEtgPGls/N0z5dybA8kDFiIxkA9jdN4io/Zj/JTfd7n+pUpsI/2zj803EHaM+5HYKUA7X02sBxmZCEJlDnALtw6zZvCxXIZ5zmZaddz+thcXnNtDiMybPDd4UQxPywRwAPwINErTZvmz+JwGbKNeajo+xLxsy927zAq1+xJfFqbM4zKbJG++kqOZZPGRI9r4C6D85B+5sDyWVBHU3s+5ukCDWkDztYRlAP2fNbOPzTcRVBcc1F+4Bqgz3Kn6LAcfmWc3nNn8Jt8chnjgdKlL2pPYJDWNr+agKta41DOKJMHoE1nN52YcZmShReWDWidRzg4BaLVfeXxkW09qSkTeW18p6w80IQogH4nIZtm1G7LwOo9xfqZ3o+bv3OMymzem3aJQi1qr2ugj9B9mv6mwPJZa+itIaf6rONylCuPO64/cuXV/vrceZQbj9tws4/NNxF/NPZip+7QcfmSgwAALnUivtUxzZ/CbfHIZ4zkAkuFdTpMQId4vLNhdQxvrmFoMi/AvXBObzsw4zMidGBWkqyje96+KUH9zrOj3aEZc6qi/pgMd8o11Lpru/c5DNiGQ0EXxD6V7DT9TrKdXBQ2S7KtKPtfOMymzem3aJzLQ+b53YF8CbA8llo6UX7y8/c5XKUh0evt02jk2FO27xWUzG8dcSIiiUScfmm4hUc5rM6RXv1i7gk7jpKqQhFQR/krMjFhffCiFQtVgxaZDXa3KNLpSaODW6hOQzzYf1OKysu5rONPSkXKt37ifWi4KkbmBclAP7EiGg7m+nibPDkaJ7AW7GYUUoavZJXG8gQpTVYiWmuV1HxBaGhqwriU7zB6ZfWhBR1Thr/pOrBurhwpV6eYgM6BybkIrUK966hSJIXYZ57ekg9RlulKQ2XRaz4SUEspXA1vvmOoJrI9+rfUpSKRNNWwhbaWqr4elcmqClLAR1FRBnDtvR4JXKK6tRQ3tejFxKNNAplfKQ+NIQod1ziY2UqG/sk6Q7RqKU94FLNbe8NS5hgMlhOlLtEyYQGeUD4lNI2oVPdnK1akUN7XpByVRpuGMcOcji4UqqENQVUqa2FeGl4D3j5qlOsdogr4RamtfeUSPyRrROq5yq4ZrNH2SDPrswmnGMJdS6Pk2rWfCRVgtFTyucewQxSGPTLKJ4hKmtM63/MCoO4JWpSlgBQWrqEAu1FlX7RuRd8a6fEC1lMFTsH/AJqG0pntH2krMGalITh2jVjm/wD2D//EACsQAQABAgQFBQEBAQEBAQAAAAERACExQVHwEGFxgaEgMJGxwfHRQFDhcP/aAAgBAQABPxD/APEQmEBiexUIZ6ED9KxQPNDs/wDoq5WEE7FM52ziurgeah0cwT1Fd4GXtsL2o/lZ25wx/vL/AM604eUWlM8m91HDyqP0iIZ6mKmAJnFPTWiXjGE9nV+ODZjBaiy6q1sR4rUcml8LGj+D/wCY1TEDivsq9CEQz1sTS81zgnprWK8wj2d/ikbNqoNDQrxXBPhJQoF6DMdF/h9qiEyayVHwEvPR1MPctVHKglwpt5hYV/2eB+jNMgpGhLZhC26tECIpmbxfNYiNAhcCM2mSbMmOhl24nto8pcGyaaShUJg0UXeXER5PxoIRGHYD6e3ub9op6OmgGyGlmYHhRk/9SI3dAZpyCrZwC5d6GgyKuI4cMazuAX4BrMsEeAKZi+5bDzcaWgfQw4bJp4NhliiJ5Q+nuWbazhewqMAs30e3RvaoEKMR/wChMLYDADNdCrayCxd6Gg4AoYh4KvTYcDEdCmIouNH6O1YRBIxUvMifDFQPkYZSPPJ24bJp4s+F+nuW8eidBkLQNutM2VCJCP8AzLQeA+3Q51bgJaxaaB6e0RfwQrV1q87k4vSou7g435UY9crlWvFcNk08WfC/T3lQlBSt8yPngcShAYdTaeuIUBCYn/I7Y9lgVYIJax+j7fVQbGdsnmDFL6OyDXLoMTZgY07h5kDvwMTWrsJGK4+R+uGyaeLPhfp7ypUHbwoC9A3trsHZJwi2pZfheRn1x/4taOBmvioA/D74Zgrv/Lfb29fPsokjWIx2MWpqgGBMvgPumIhirAcNk08WfC/T3lWxaKl4iW6rLwjwP1csuGYS5+OpfZ3/AOGFCJbrXb+TP1c8+HNFf7m11e3T08+zikdYOhr2qPYbxX9l2ohEAYZFYa4N9c/8UbnjYF/3vw2TTxZ8L9PeVMg3QUC4E8uHxYUAQhfw/R44c/sXuLTUyx6e9F/ksqqGergG6XPhEvm49ya6uXXD18+ymT08w/AVKusFQjmx4PFcNk08WfC/T3lWw6VDnYBBi+FO9a9Ssrwf4N8X4tlF55OpVupgmlepqqQRGkuyQ+LRtHTD3DG8HlVCz11h2S8AC1Xb4No64Kqqyvr59pWwI5SbvfjZTDKLWCvkaeswPPDZNPFnwv095VsOnCwh04Ug5UwGFpdX26OfWaUGjsMwzGhccFbf9DRpEACEcEpEik55t29sI2B5U5FFT10A+zV20QishGHQ2jrgiIq3VphaYLbrhqjGsOUT6+fZQrGIBK0Qi1w3LbrUou4l+vip4e5xT014bJp4s+F+nvKiL5heKAVSUg5YcENRJsN51M56lMPxeS+oYHwL1HIqGgLp6J/HOhiEiEiaNWgZG6nL8Pbr7BCzBSpyKFdUALk56vbrRtgRlm3akakSq3WmEog7rY/xiDaAAIA9bn2L3lwXDAy70Gkh+pZdCrqsEgrQnvMf6UbRMTw6GBw2TTxZ8L9PeVbFo4yDjUpoTy0RyTEaUyOsdj4Bn81z/wCO6VJTG47hTGiBSByatwhOKnwaO31J7cAlTgFa+dgNkfZ7daEUGAuB26UoR0hKtQJFJCzN27KEo0BAGlMgzf03MhJmXgmb+YYOtBG4F0HQx8K0WUmOgYHDxXDZNPFnwv095VsWjjIPs+OKnsXktogqMpSDeVB8Ff4SZDWn0skMPxjM/Kk5Nw9E/jlWAsauq5lOYcPIKVBrhXuhz9KhGgJV0oAwy1wO3Thbhubhc/wd+rYFUJVc2pqirJLe+eFFLUBADACrlUJdO5auXwPgy8KWR/fTzwOGk0oaIOHGByGMDr4KKLO+F+/Bsmniz4X6e8q2LRxkw916jWs1u7GTPrQzzpSjMrES4+nbJKanIA6dz1MvhoBJCU2H4mTRIy2c1mJklR4xNZKzV4dp++JNyoAJVo2ApfAbduGOERiFzc9Dv1dKZKVObUpuD2FvLngZoJWw8AwAyKmRqVN8xcqmBr4ShufVzwOOqDOesLdTgUIFiyx1sTQOjiGFQoE1b2y78Nk08WfC/T3lWxaOMmHuvw6vOot4v9C+IDbTJGCNWfjYuX/wzq1IWDlf8MqvYcJsGpoKKochlydGpmxh98mr7jbWP0CkAFVgM6IhS0Tq7R14J7DzETyaG14mF5U5tXIUGwsn2exnBUMRoDADIrmLC5f9HKpEjiXL/wCmfr54HDVqk2WSB4MqwVtRP7TqH/pKhZ1bTSzZhQYxyUleGyaeEOwmhhkrwn095VsWjjJh7r8dz+gutn15mWJnJXTJSBwRq4kwXXnLUz+GsYYx6NsxqTssX9n2rWhgag4lhMxyTRKZoO+BqDY+qUNrrDsgpzPF5U10BsQf0dhfAlMogDACoBY+EobiogRim+Yufsc8DhrDIiU+QalkFsdHLIpkvTLLwUM4DQ0XwhlOZ/qsVPxu8BVKRMyi5dBPotz3lWxaOMmHuv6KE5IcTk7dlE2FIjIlJ45A+hOqzP2n2PhMnJM1rUmObJ/dqZ0Xo2HBweE9dTANkGdJvkrKq0Q3wXj17C+BgOwAGAFeGCApZv1jV4akOnc9XP4PZ54HDTwgEnAh6QVAorGhBCnLFWu0Ul0P9Ur1UK/ahYCvYD9dqWI0AhH3VWxaOMkQBQQcGV+npxsIYx5J4v0wKaxysePyLxiV9WqDI5jiNFpomF0+jU7nOUb2JC8XLP5qVCJbqhukeA2uTrgVkcEFgBWHcA9OWa1dkVbpzV1c/g9rngcdUIU+GGSwGrgr2IHKvSk3j3tk6ZO9QjB/8vTtQY2lEAUDwANl4xzqKc5eRWGEF5GkaZCC098+9PkgvYBz/wAUiKJCe2q2LRxk3/T6uRz2IfTV204X8+lP6XhvqKKAh3W8+AIbB7KbVy60B8YUCZUa8NjsAzVOUzpJ+lZv5Ht88DhrAjJvxgdWGdYOUsOhQkEpgNWpcDkM3wVisiiKkWC2EdM6O7smzNteGXmqWSZxJ6+Bq/jWLnWz+lFWiR5GgRmIdmbf/ftqti0cZN/0+tdHewK66s8MYmkpXa2Bthy6UzC0KfHn6uR2o9TwoBRFhd3IM1pSpVSGWqdVm/nuc8DhsuIYXx1YfapDAGVnVzoHpLhqsfPBIN7Dkxh6MvNcWVqQ9cdShWno4ke2q2LRxk3/AE+p3piIShREYSiigZzDreP6x4DAaVzWQZrSrtWQbDVqs3gnhrBgM0yDWmfSbdYY9rngenVCLW66vRl5r0LeC+2q2LRxk3/T6go3e2CP5uVOdkRCqUI6QhGolonQAY/szxM41xum0AzXIqI7SZJ5l4w5tJYaxkM0yDWh4iSpd6NBpW4ava54HDQ5pAlWhC0KlgNTLgi1uur0Zea9C3gvtqti0cZN/wBPqYEESzUGqyaRhFsMW8cqbHYmFFEAxOiXETBogY1kVCGa1+A4JACDRzTIKLgCKF9JoMikKqbsh+nQzpDJZNV9rngcNsoSScEW0wyrYtTgi1uur0Zea9C3gvtqti0cZN/0+p6COo5hmNF0ABXqDVZNPzY24Bvhyp7xioVwRwuXUJkGtRfGFehGgyKapN8RXh0M6epNm6fb54HDbYUr1x8tGbEMIdAy4Itbrq9GXmvQt4L7arYtHGTf9PrTCj9QZqgzjwrc1NVk0sC6uwfr0cqADkLjnTIa0bMOVLmhoMimi3V3DvgzqTXapV7nPA9OqEWt11ejLzXoW8F9tVsWjjJv+n2EkJiYZgZjpQdhgW50arJo3RxHKE4wS06WazyDbBnSSnNSnu88DhrPwLHAxFyKbDFL9vPPgi1uur0Zea9C3gvtqti0cZN/0+wLaFcmDFdCp4LBiAzCbjQgQDXsBDiyaSEzs2P06OVRJFRCvd54HDX7ZLArV1pBhB0m+JwRa3XV6MvNehbwX21WxaOMm/6fWjFf6kyFGDGKl3Q0GRSldTI74M6nluSzdjqLSj6jQ7d+Ra1ES7iwPr55VA8lMK9zngcNfYIq4pNmBjSWhmQO/BFrddXoy816FvBfbVbFo4yb/p9SnV9M0mQUDAAIOiNBkVisDkhd4Z0oUbUo4JwayYDMMx0oOwwW5+Ra06GK4YPr0cqQlEu47z9vngenVCLW66vRl5r0LeC+2q2LRxk3/T6XMXOmaTIa0BAgwzRchkU9GuAXeGdMLAxKPRMQYJgMwzHSicCpW68iqBbi1YfTo5VGSxMK9rngcNUVFWLof4pGViEWRgcEWt11ejLzXoW8F9tVsWjjJv8Ap9XABMOMghKOUzTSdMSjg8LL8K5UxWsZiLwiM2mspgkdDHBEzSGCZozHSsDU4AgwfPtgeeBx0u9JmmpZ58EWt11ejLzXoW8F9tVsWjjJv+n2eDhrJYLcQtXAEuh8QM18uTTQYITBhr95YB54HDUKRMatN3fii1uur0Zea9C3gvtqti0cZN/0+zwcNPrDgaOow9vJB2RU4O8SLA4n5Y6UGRvUeTHoBsJzPa54Hp1Qi1uur0Zea9C3gvsmTL+Hg/30oIIatAP0hCUQWa/nv+UfD0wUI4tbz/a3n+1vP9ref7ST4ZEU4WXRozBSxJsWDL240aNGjRo0aNGGVtaJTef7W8/2kCUg34+nmPn1msAlfgRWC02Ff0NXgnSJCPKU0r8IR3Jr+hr+hog5yeSaUTQWVV/Q1/Q0GwkoCUq4DGKTnULCvY3bR/0+a+vTyhAXRp/OV/OV/OV/OV/OV/OV/OV/OV/OV/OV/OV/PV/OV/OUxYZGU9j2BRkYf+yUpSlKUpSlKUpSlKUpSlKSEpHlwkpKlefspAyDSv8Ahzq1FDuAP5KIji0A/TybnugeU21giQSpXSgrUALUCtRRe+EwYwfivMwC2UCgSGTwcEcVWUsNW03Vy1c4cFFCgHOiPOSw1GihFQhCNERCS35CDSraDwDETJpLwogUsxAqDwV9HCAnupIbpdy4EEU1UQY75wYo+FCCRwzKLO+HyQKKiErr2BRia0VfpXh1pbtKr1g3qU8JAEwxAxqC7FzoIRuG2cxuUB5TbWCJBKv52QQogBBhHKsA1pXqg1e2sXa6goCniI5MWCeEQy0sDk9QcBphJbchBpwOQjWggngdFZBTkkKbghL8EXVeJeHZyCUoLaFqYJjn8EnOUPWjSuQfADAQzcMqYd9zDQKTStJwNFCNAQjp7W06KQvg9zGgVQEB1B4L21aahDozOh8PBMU/huXj/QUAKJwxn/oUgWOGjA+aJaeRirnwab9o1Ii6bHC/Vbnqqbz8YMATkv1U0VwpQaEgB1oJJ+cArSZoq6RXwzQauWl6Ba6BCnP0NTHRMYgm7Zjwwl7vdRxBIrpoUCsOoSaJPeluclAL0bpiRaBxigdEnGu6iPNNUQLlTbuNOUeIgkzJRHq0J0bbOwchPNABGBGIYC6sQ5mJHO4KHSwHRyHa52qyM7uZPlovxRh/ZUKvIZV6RnA+WhO5CRni4kHnlTgCPy5SRj1KbFJrJDRN4pwEJxqFX0U/XkCVXoJLtJ3JDgHEymbaRzo4skMux1RMz19pmYTdIVAePag/oqLMKXMXHgOF7wziAWhLMgBzn2PCa0bGFt/9U/FOgYRGQn4SqwvB/j8j44tN+0aT10A8v6VCIEtzJw+2DKpkprmAyMCgVSzALXpLPX3i3IcWE6glf6q2XRwd2XWm41mh2/70BPF+KQoUnsnZKj9qWHzcrI4Sz1Z+OFaeWUuAAYkZSo0Z9oOMmzoqyyGdBP2miiI8Q/eFSZ5v+aiMx/Q9plFxygWPAR+aYgB2U/ZuK9nMlTl4MHwqzXrQpoBmLHkeGNg4SMJ8nw4tN+0aRM0oQ748KNqkNSTx7B/Kg1Awx04sQ4IA5ZrQUJiygx5pYzC2FbzoqYSw77BAHyplLHF510TB34IbzrwxAAjQjEMBdQYjJ83uglpT8nxtCl3IOtOpBZDhBl4KchAGzvUNxhonF1aVwcJ1PymOTZJwfs6F+CEP5cEtj0V5T7PbyvxOVm4fzTUQDOQ8S9pqWsQU/ShAAgKF02cJtCjXZCdAPALtWKiiHUT3E78Wm/aNMsgv2e58u1QLOevH+VMHSCYCyvmk+uALLYoB49DUDDI31ElwVsThQJECOlJ8lbzoqW3RaCA5J7UJCswAwRYOnBDedeGJMUcghhUWsUg1mnQnng7VElHLH3t6lasdKghoJpTMGlwEKDhGVOrgo6JDw8OoAcIiuVAokCb4LSAXA2YIRZMNaN2Rwibv/PBLY9FeU+z28g/FGD9NOHw7IF9vG9sKVTX/ACvlwYIUUf4+Ke9MVTZuZjr5K5mjK0l+QpmSIRLjwab9o0yhEYTKki2eQsY8hppTquID4T8VKM+SBZg3HyqZpXbVShcjWkwTAbq+JhqGxKBgQBDYnGggJJzWHVY4Yd11pueutl0Vt+ui1GqwAZUmJy1NJhjJ1oiftwHF0LysqmIphwvPh5cYRDTcG2db7KvORxCksoiMqfwWwgIwjPXKhtHFcOG6Q+aMhkKEEiBvdbzU1jAjqO7V0UQyRVAAmScq601SwGXbDe03pzpvg1b+WpEYIjHnQJUzt0s/AL7R2AWMbi2THKhA6cUhFqCfyI6cGU48yiOiBYwzZUZaV/8ARVcmyY5UsghhKRweThQUUBQCGJRPahOzkXJEwntwLi0uCCQBe1E6OBGUtysd6knIlKKUTPSniK3WQgFMc1ozcEEBTET1U5hqISlLKJ5VNEFoF4ElPmgIAAHmEJF6BRA3uTmE5dAp/ApWnNBmUXJl27y+6CkfGk1kqurSG0ZTIpQMXSoeURCwwFdNaxffSokNWLtgoIJgE9qHkCGAVLHDAKYBZEcTqNNPsgvPSgO41H86g5ywGe9AgGgGIYK6iMPC1EW5CiToJ40EFUnKQkiAAqmGtAUycUhFqAaPsuypmMXzVs/CB5DOTuNB5SR7vgST6UCKrIWIyTHLg73ClhBKA8UANdtarmkidZ51Yzzqy21oc+HGHZdl/wDNgLAuipKKKIsgiEvwrRSCHnMJYCcDI/8A2D///gADAP/Z" alt="MNX"></div>
+    <div style="flex:1">
+      <div class="topbar-title">CRM Prospecção</div>
+      <div class="topbar-sub">MNX Incorporação</div>
+    </div>
+    <button class="icon-btn" onclick="openDrawer('sync')" title="Sincronizar dados" style="margin-right:4px">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+    </button>
+    <button class="icon-btn" onclick="openAddLead()">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke-linecap="round"></path></svg>
+    </button>
+  </div>
+</div>
+
+<!-- SCREENS -->
+<div id="screen-leads" class="screen active">
+  <div class="screen-pad">
+    <div class="search-wrap">
+      <input class="search-input" id="search-input" placeholder="Buscar nome, área, fase..." oninput="renderLeads()">
+    </div>
+    <div class="filter-scroll" id="filter-chips"><button class="chip on" onclick="setFilter('Todos')">Todos</button><button class="chip" onclick="setFilter('Novo')">Novo</button><button class="chip" onclick="setFilter('Em análise')">Em análise</button><button class="chip" onclick="setFilter('Sem interesse')">Sem interesse</button><button class="chip" onclick="setFilter('Aguardando dctos')">Aguardando dctos</button><button class="chip" onclick="setFilter('Proposta')">Proposta</button><button class="chip" onclick="setFilter('Contrato')">Contrato</button><button class="chip" onclick="setFilter('Declinado')">Declinado</button><button class="chip" onclick="setFilter('Executar com sócio')">Executar com sócio</button></div>
+    <div id="urgentes-banner"><div class="urgente-strip">⚡ 8 follow-ups vencidos — ação necessária hoje</div></div>
+    <div id="leads-list">
+<div class="card lead-card" style="border-color:#c0392b;animation-delay:0s">
+  <div class="card-header" onclick="openLead(1)" style="cursor:pointer">
+    <div style="flex:1">
+      <div class="lead-name">José Ferreira</div>
+      <div class="lead-loc">Estrada do Capão, Laf. · 18.500 m²</div>
+    </div>
+    <svg width="15" height="15" fill="none" stroke="#ccc" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"></path></svg>
+  </div>
+  <div class="card-body" onclick="openLead(1)" style="cursor:pointer">
+    <div class="lead-row">
+      <span class="badge b-fase">Identificação</span>
+      <span class="badge" style="background:#f1efeb;color:#555">Novo</span>
+    </div>
+    <div class="meta-row">
+      <div class="meta-item">
+        <div class="meta-label">Follow-up</div>
+        <div class="meta-val urgente">22/04/2025</div>
+      </div>
+      
+      <div class="meta-item"><div class="meta-label">Prob.</div><div class="meta-val">10%</div></div>
+    </div>
+    <div class="acao-pill"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>Enviar WhatsApp</div>
+  </div>
+  <div class="card-actions">
+    <button class="btn btn-ghost btn-sm" style="flex:1" onclick="openLead(1)">Ver detalhes</button>
+    <button class="btn btn-ghost btn-sm" style="flex:1" onclick="openEditLead(1)">✏️ Editar</button>
+    <button class="btn btn-danger btn-sm" onclick="quickDelete(1,event)">🗑 Excluir</button>
+  </div>
+</div>
+<div class="card lead-card" style="border-color:#c0392b;animation-delay:0.04s">
+  <div class="card-header" onclick="openLead(2)" style="cursor:pointer">
+    <div style="flex:1">
+      <div class="lead-name">Maria das Dores Souza</div>
+      <div class="lead-loc">Rod. MG-443, km 12 · 32.000 m²</div>
+    </div>
+    <svg width="15" height="15" fill="none" stroke="#ccc" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"></path></svg>
+  </div>
+  <div class="card-body" onclick="openLead(2)" style="cursor:pointer">
+    <div class="lead-row">
+      <span class="badge b-fase">1º Contato</span>
+      <span class="badge" style="background:#d0e8f8;color:#0c447c">Em análise</span>
+    </div>
+    <div class="meta-row">
+      <div class="meta-item">
+        <div class="meta-label">Follow-up</div>
+        <div class="meta-val urgente">25/04/2025</div>
+      </div>
+      
+      <div class="meta-item"><div class="meta-label">Prob.</div><div class="meta-val">25%</div></div>
+    </div>
+    <div class="acao-pill"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>Ligar</div>
+  </div>
+  <div class="card-actions">
+    <button class="btn btn-ghost btn-sm" style="flex:1" onclick="openLead(2)">Ver detalhes</button>
+    <button class="btn btn-ghost btn-sm" style="flex:1" onclick="openEditLead(2)">✏️ Editar</button>
+    <button class="btn btn-danger btn-sm" onclick="quickDelete(2,event)">🗑 Excluir</button>
+  </div>
+</div>
+<div class="card lead-card" style="border-color:#c0392b;animation-delay:0.08s">
+  <div class="card-header" onclick="openLead(3)" style="cursor:pointer">
+    <div style="flex:1">
+      <div class="lead-name">Fazenda Boa Vista Ltda.</div>
+      <div class="lead-loc">Zona rural - Bairro Novo · 85.000 m²</div>
+    </div>
+    <svg width="15" height="15" fill="none" stroke="#ccc" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"></path></svg>
+  </div>
+  <div class="card-body" onclick="openLead(3)" style="cursor:pointer">
+    <div class="lead-row">
+      <span class="badge b-fase">Reunião Técnica</span>
+      <span class="badge" style="background:#d0e8f8;color:#0c447c">Em análise</span>
+    </div>
+    <div class="meta-row">
+      <div class="meta-item">
+        <div class="meta-label">Follow-up</div>
+        <div class="meta-val urgente">28/04/2025</div>
+      </div>
+      <div class="meta-item"><div class="meta-label">VGV</div><div class="meta-val ouro">R$ 4.200.000</div></div>
+      <div class="meta-item"><div class="meta-label">Prob.</div><div class="meta-val">50%</div></div>
+    </div>
+    <div class="acao-pill"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>Enviar proposta</div>
+  </div>
+  <div class="card-actions">
+    <button class="btn btn-ghost btn-sm" style="flex:1" onclick="openLead(3)">Ver detalhes</button>
+    <button class="btn btn-ghost btn-sm" style="flex:1" onclick="openEditLead(3)">✏️ Editar</button>
+    <button class="btn btn-danger btn-sm" onclick="quickDelete(3,event)">🗑 Excluir</button>
+  </div>
+</div>
+<div class="card lead-card" style="border-color:#c0392b;animation-delay:0.12s">
+  <div class="card-header" onclick="openLead(4)" style="cursor:pointer">
+    <div style="flex:1">
+      <div class="lead-name">Antônio Carlos Ribeiro</div>
+      <div class="lead-loc">Av. dos Mineiros, fundo · 9.200 m²</div>
+    </div>
+    <svg width="15" height="15" fill="none" stroke="#ccc" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"></path></svg>
+  </div>
+  <div class="card-body" onclick="openLead(4)" style="cursor:pointer">
+    <div class="lead-row">
+      <span class="badge b-fase">Negociação</span>
+      <span class="badge" style="background:#fff3cd;color:#7a4f00">Aguardando dctos</span>
+    </div>
+    <div class="meta-row">
+      <div class="meta-item">
+        <div class="meta-label">Follow-up</div>
+        <div class="meta-val urgente">22/04/2025</div>
+      </div>
+      <div class="meta-item"><div class="meta-label">VGV</div><div class="meta-val ouro">R$ 1.800.000</div></div>
+      <div class="meta-item"><div class="meta-label">Prob.</div><div class="meta-val">65%</div></div>
+    </div>
+    <div class="acao-pill"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>Aguardar advogado</div>
+  </div>
+  <div class="card-actions">
+    <button class="btn btn-ghost btn-sm" style="flex:1" onclick="openLead(4)">Ver detalhes</button>
+    <button class="btn btn-ghost btn-sm" style="flex:1" onclick="openEditLead(4)">✏️ Editar</button>
+    <button class="btn btn-danger btn-sm" onclick="quickDelete(4,event)">🗑 Excluir</button>
+  </div>
+</div>
+<div class="card lead-card" style="border-color:#c0392b;animation-delay:0.16s">
+  <div class="card-header" onclick="openLead(5)" style="cursor:pointer">
+    <div style="flex:1">
+      <div class="lead-name">Herdeiros Prado</div>
+      <div class="lead-loc">Sítio da Família - Carandaí · 41.000 m²</div>
+    </div>
+    <svg width="15" height="15" fill="none" stroke="#ccc" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"></path></svg>
+  </div>
+  <div class="card-body" onclick="openLead(5)" style="cursor:pointer">
+    <div class="lead-row">
+      <span class="badge b-fase">Proposta Enviada</span>
+      <span class="badge" style="background:#f5e9cc;color:#7a4f00">Proposta</span>
+    </div>
+    <div class="meta-row">
+      <div class="meta-item">
+        <div class="meta-label">Follow-up</div>
+        <div class="meta-val urgente">30/04/2025</div>
+      </div>
+      <div class="meta-item"><div class="meta-label">VGV</div><div class="meta-val ouro">R$ 6.500.000</div></div>
+      <div class="meta-item"><div class="meta-label">Prob.</div><div class="meta-val">70%</div></div>
+    </div>
+    <div class="acao-pill"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>Reunião com herdeiros</div>
+  </div>
+  <div class="card-actions">
+    <button class="btn btn-ghost btn-sm" style="flex:1" onclick="openLead(5)">Ver detalhes</button>
+    <button class="btn btn-ghost btn-sm" style="flex:1" onclick="openEditLead(5)">✏️ Editar</button>
+    <button class="btn btn-danger btn-sm" onclick="quickDelete(5,event)">🗑 Excluir</button>
+  </div>
+</div>
+<div class="card lead-card" style="border-color:#c0392b;animation-delay:0.2s">
+  <div class="card-header" onclick="openLead(6)" style="cursor:pointer">
+    <div style="flex:1">
+      <div class="lead-name">Eliane Batista Torres</div>
+      <div class="lead-loc">Expansão sul - Laf. · 12.300 m²</div>
+    </div>
+    <svg width="15" height="15" fill="none" stroke="#ccc" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"></path></svg>
+  </div>
+  <div class="card-body" onclick="openLead(6)" style="cursor:pointer">
+    <div class="lead-row">
+      <span class="badge b-fase">1º Contato</span>
+      <span class="badge" style="background:#fdecea;color:#c0392b">Sem interesse</span>
+    </div>
+    <div class="meta-row">
+      <div class="meta-item">
+        <div class="meta-label">Follow-up</div>
+        <div class="meta-val urgente">10/05/2025</div>
+      </div>
+      
+      <div class="meta-item"><div class="meta-label">Prob.</div><div class="meta-val">15%</div></div>
+    </div>
+    <div class="acao-pill"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>Reaquecimento 30 dias</div>
+  </div>
+  <div class="card-actions">
+    <button class="btn btn-ghost btn-sm" style="flex:1" onclick="openLead(6)">Ver detalhes</button>
+    <button class="btn btn-ghost btn-sm" style="flex:1" onclick="openEditLead(6)">✏️ Editar</button>
+    <button class="btn btn-danger btn-sm" onclick="quickDelete(6,event)">🗑 Excluir</button>
+  </div>
+</div>
+<div class="card lead-card" style="border-color:#c0392b;animation-delay:0.24s">
+  <div class="card-header" onclick="openLead(7)" style="cursor:pointer">
+    <div style="flex:1">
+      <div class="lead-name">Construtora Pinheiro ME</div>
+      <div class="lead-loc">Área comercial - Centro · 6.800 m²</div>
+    </div>
+    <svg width="15" height="15" fill="none" stroke="#ccc" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"></path></svg>
+  </div>
+  <div class="card-body" onclick="openLead(7)" style="cursor:pointer">
+    <div class="lead-row">
+      <span class="badge b-fase">Reunião Técnica</span>
+      <span class="badge" style="background:#f5e9cc;color:#7a4f00">Proposta</span>
+    </div>
+    <div class="meta-row">
+      <div class="meta-item">
+        <div class="meta-label">Follow-up</div>
+        <div class="meta-val urgente">23/04/2025</div>
+      </div>
+      <div class="meta-item"><div class="meta-label">VGV</div><div class="meta-val ouro">R$ 2.100.000</div></div>
+      <div class="meta-item"><div class="meta-label">Prob.</div><div class="meta-val">80%</div></div>
+    </div>
+    <div class="acao-pill"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>Enviar laudo técnico</div>
+  </div>
+  <div class="card-actions">
+    <button class="btn btn-ghost btn-sm" style="flex:1" onclick="openLead(7)">Ver detalhes</button>
+    <button class="btn btn-ghost btn-sm" style="flex:1" onclick="openEditLead(7)">✏️ Editar</button>
+    <button class="btn btn-danger btn-sm" onclick="quickDelete(7,event)">🗑 Excluir</button>
+  </div>
+</div>
+<div class="card lead-card" style="border-color:#c0392b;animation-delay:0.28s">
+  <div class="card-header" onclick="openLead(8)" style="cursor:pointer">
+    <div style="flex:1">
+      <div class="lead-name">Roberto Alves Neto</div>
+      <div class="lead-loc">Bairro Industrial · 7.500 m²</div>
+    </div>
+    <svg width="15" height="15" fill="none" stroke="#ccc" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"></path></svg>
+  </div>
+  <div class="card-body" onclick="openLead(8)" style="cursor:pointer">
+    <div class="lead-row">
+      <span class="badge b-fase">Identificação</span>
+      <span class="badge" style="background:#f1efeb;color:#555">Novo</span>
+    </div>
+    <div class="meta-row">
+      <div class="meta-item">
+        <div class="meta-label">Follow-up</div>
+        <div class="meta-val urgente">24/04/2025</div>
+      </div>
+      
+      <div class="meta-item"><div class="meta-label">Prob.</div><div class="meta-val">5%</div></div>
+    </div>
+    <div class="acao-pill"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>Enviar WhatsApp</div>
+  </div>
+  <div class="card-actions">
+    <button class="btn btn-ghost btn-sm" style="flex:1" onclick="openLead(8)">Ver detalhes</button>
+    <button class="btn btn-ghost btn-sm" style="flex:1" onclick="openEditLead(8)">✏️ Editar</button>
+    <button class="btn btn-danger btn-sm" onclick="quickDelete(8,event)">🗑 Excluir</button>
+  </div>
+</div>
+<div class="card lead-card" style=";animation-delay:0.32s">
+  <div class="card-header" onclick="openLead(9)" style="cursor:pointer">
+    <div style="flex:1">
+      <div class="lead-name">Sítio Três Irmãos</div>
+      <div class="lead-loc">Rod. 482 - acesso Dores · 55.000 m²</div>
+    </div>
+    <svg width="15" height="15" fill="none" stroke="#ccc" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"></path></svg>
+  </div>
+  <div class="card-body" onclick="openLead(9)" style="cursor:pointer">
+    <div class="lead-row">
+      <span class="badge b-fase">Fechado</span>
+      <span class="badge" style="background:#d4edda;color:#1a5c2a">Contrato</span>
+    </div>
+    <div class="meta-row">
+      <div class="meta-item">
+        <div class="meta-label">Follow-up</div>
+        <div class="meta-val">—</div>
+      </div>
+      <div class="meta-item"><div class="meta-label">VGV</div><div class="meta-val ouro">R$ 7.800.000</div></div>
+      <div class="meta-item"><div class="meta-label">Prob.</div><div class="meta-val">100%</div></div>
+    </div>
+    
+  </div>
+  <div class="card-actions">
+    <button class="btn btn-ghost btn-sm" style="flex:1" onclick="openLead(9)">Ver detalhes</button>
+    <button class="btn btn-ghost btn-sm" style="flex:1" onclick="openEditLead(9)">✏️ Editar</button>
+    <button class="btn btn-danger btn-sm" onclick="quickDelete(9,event)">🗑 Excluir</button>
+  </div>
+</div>
+<div class="card lead-card" style=";animation-delay:0.36s">
+  <div class="card-header" onclick="openLead(10)" style="cursor:pointer">
+    <div style="flex:1">
+      <div class="lead-name">Paulo Henrique Melo</div>
+      <div class="lead-loc">Bairro São João · 4.200 m²</div>
+    </div>
+    <svg width="15" height="15" fill="none" stroke="#ccc" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"></path></svg>
+  </div>
+  <div class="card-body" onclick="openLead(10)" style="cursor:pointer">
+    <div class="lead-row">
+      <span class="badge b-fase">Fechado</span>
+      <span class="badge" style="background:#fdecea;color:#c0392b">Declinado</span>
+    </div>
+    <div class="meta-row">
+      <div class="meta-item">
+        <div class="meta-label">Follow-up</div>
+        <div class="meta-val">—</div>
+      </div>
+      
+      <div class="meta-item"><div class="meta-label">Prob.</div><div class="meta-val">0%</div></div>
+    </div>
+    
+  </div>
+  <div class="card-actions">
+    <button class="btn btn-ghost btn-sm" style="flex:1" onclick="openLead(10)">Ver detalhes</button>
+    <button class="btn btn-ghost btn-sm" style="flex:1" onclick="openEditLead(10)">✏️ Editar</button>
+    <button class="btn btn-danger btn-sm" onclick="quickDelete(10,event)">🗑 Excluir</button>
+  </div>
+</div></div>
+  </div>
+</div>
+
+<div id="screen-dash" class="screen">
+  <div class="screen-pad" id="dash-content"></div>
+</div>
+
+<div id="screen-hist" class="screen">
+  <div class="screen-pad" id="hist-content"></div>
+</div>
+
+<!-- TABBAR -->
+<div class="tabbar">
+  <button class="tab active" id="tab-leads" onclick="showScreen('leads')">
+    <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+    Leads
+  </button>
+  <button class="tab" id="tab-dash" onclick="showScreen('dash')">
+    <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect></svg>
+    Dashboard
+  </button>
+  <button class="tab" id="tab-hist" onclick="showScreen('hist')">
+    <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+    Histórico
+  </button>
+</div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- DRAWER: VER LEAD -->
+<div class="overlay" id="ov-lead" onclick="closeDrawer('lead')"></div>
+<div class="drawer" id="dw-lead">
+  <div class="drawer-handle"></div>
+  <div class="drawer-title" id="dl-name"></div>
+  <div class="drawer-body" id="dl-body"></div>
+  <div class="drawer-actions">
+    <button class="btn btn-ghost" onclick="closeDrawer('lead')">Fechar</button>
+    <button class="btn btn-dark" id="dl-edit-btn">Editar</button>
+  </div>
+</div>
+
+<!-- DRAWER: FORM LEAD -->
+<div class="overlay" id="ov-form" onclick="closeDrawer('form')"></div>
+<div class="drawer" id="dw-form">
+  <div class="drawer-handle"></div>
+  <div class="drawer-title" id="df-title">Novo lead</div>
+  <div class="drawer-body" id="df-body"></div>
+  <div class="drawer-actions">
+    <button class="btn btn-ghost" onclick="closeDrawer('form')">Cancelar</button>
+    <button class="btn btn-ouro" onclick="saveLead()">Salvar</button>
+  </div>
+</div>
+
+<!-- DRAWER: REGISTRAR INTERAÇÃO -->
+<div class="overlay" id="ov-inter" onclick="closeDrawer('inter')"></div>
+<div class="drawer" id="dw-inter">
+  <div class="drawer-handle"></div>
+  <div class="drawer-title">Registrar interação</div>
+  <div class="drawer-body" id="di-body"></div>
+  <div class="drawer-actions">
+    <button class="btn btn-ghost" onclick="closeDrawer('inter')">Cancelar</button>
+    <button class="btn btn-dark" onclick="saveInteracao()">Salvar</button>
+  </div>
+</div>
+
+<!-- DRAWER: CONFIRMAR RESET -->
+<div class="overlay" id="ov-reset" onclick="closeDrawer('reset')"></div>
+<div class="drawer" id="dw-reset">
+  <div class="drawer-handle"></div>
+  <div class="drawer-title">⚠️ Limpar todos os dados</div>
+  <div class="drawer-body">
+    <p style="font-size:14px;line-height:1.6;color:var(--muted);margin-bottom:20px">Esta ação vai apagar <strong style="color:var(--text)">todos os leads e todo o histórico</strong> permanentemente. Não há como desfazer.</p>
+    <button class="btn btn-danger-solid btn-full-lg" onclick="confirmReset()">Sim, apagar tudo</button>
+    <button class="btn btn-ghost btn-full-lg" onclick="closeDrawer('reset')">Cancelar</button>
+  </div>
+</div>
+
+<script>
+// ── CONSTANTES ────────────────────────────────────────
+const STATUS_LIST = ["Novo","Em análise","Sem interesse","Aguardando dctos","Proposta","Contrato","Declinado","Executar com sócio"];
+const MODELOS     = ["—","Permuta","SPE","Aquisição","A definir"];
+const CANAIS      = ["WhatsApp","Ligação","Presencial","Instagram DM","E-mail","Outro"];
+const TIPOS_INTER = ["1º Contato","Follow-up","Reunião Técnica","Visita técnica","Proposta","Negociação","Assinatura","Outro"];
+
+const STATUS_COLOR = {
+  "Novo":               {bg:"#f1efeb",color:"#555"},
+  "Em análise":         {bg:"#d0e8f8",color:"#0c447c"},
+  "Sem interesse":      {bg:"#fdecea",color:"#c0392b"},
+  "Aguardando dctos":   {bg:"#fff3cd",color:"#7a4f00"},
+  "Proposta":           {bg:"#f5e9cc",color:"#7a4f00"},
+  "Contrato":           {bg:"#d4edda",color:"#1a5c2a"},
+  "Declinado":          {bg:"#fdecea",color:"#c0392b"},
+  "Executar com sócio": {bg:"#e8e4f8",color:"#3c3489"},
+};
+
+function statusBadge(s){
+  const c=STATUS_COLOR[s]||{bg:"#f1efeb",color:"#555"};
+  return `<span class="badge" style="background:${c.bg};color:${c.color}">${s||"—"}</span>`;
+}
+function faseBadge(f){
+  return f ? `<span class="badge b-fase">${f}</span>` : '';
+}
+
+// ── STORAGE ────────────────────────────────────────────
+const K_LEADS = "mnx_crm_leads_v4";
+const K_HIST  = "mnx_crm_hist_v4";
+
+function loadLeads(){
+  try{ const d=localStorage.getItem(K_LEADS); return d?JSON.parse(d):seedLeads(); }
+  catch(e){ return seedLeads(); }
+}
+function saveLeads(d){ localStorage.setItem(K_LEADS,JSON.stringify(d)); }
+function loadHist(){
+  try{ const d=localStorage.getItem(K_HIST); return d?JSON.parse(d):seedHist(); }
+  catch(e){ return seedHist(); }
+}
+function saveHist(d){ localStorage.setItem(K_HIST,JSON.stringify(d)); }
+
+function seedLeads(){
+  return [
+    {id:1,nome:"José Ferreira",loc:"Estrada do Capão, Laf.",area:18500,fase:"Identificação",status:"Novo",contato:"2025-04-01",followup:"2025-04-22",acao:"Enviar WhatsApp",origem:"Cartório",modelo:"—",vgv:"",prob:10,obs:"Área próxima ao novo bairro planejado",resp:"Maysa"},
+    {id:2,nome:"Maria das Dores Souza",loc:"Rod. MG-443, km 12",area:32000,fase:"1º Contato",status:"Em análise",contato:"2025-03-20",followup:"2025-04-25",acao:"Ligar",origem:"Indicação",modelo:"—",vgv:"",prob:25,obs:"Aguardando retorno WhatsApp",resp:"Maysa"},
+    {id:3,nome:"Fazenda Boa Vista Ltda.",loc:"Zona rural - Bairro Novo",area:85000,fase:"Reunião Técnica",status:"Em análise",contato:"2025-03-05",followup:"2025-04-28",acao:"Enviar proposta",origem:"Corretora parceira",modelo:"Permuta",vgv:"4200000",prob:50,obs:"Sócios querem dividir a área em 2 glebas",resp:"Equipe Técnica"},
+    {id:4,nome:"Antônio Carlos Ribeiro",loc:"Av. dos Mineiros, fundo",area:9200,fase:"Negociação",status:"Aguardando dctos",contato:"2025-02-14",followup:"2025-04-22",acao:"Aguardar advogado",origem:"Instagram",modelo:"SPE",vgv:"1800000",prob:65,obs:"Consultar advogado pessoal até 30/04",resp:"Maysa"},
+    {id:5,nome:"Herdeiros Prado",loc:"Sítio da Família - Carandaí",area:41000,fase:"Proposta Enviada",status:"Proposta",contato:"2025-01-28",followup:"2025-04-30",acao:"Reunião com herdeiros",origem:"Indicação",modelo:"Aquisição",vgv:"6500000",prob:70,obs:"3 herdeiros — precisam de reunião conjunta",resp:"Equipe Técnica"},
+    {id:6,nome:"Eliane Batista Torres",loc:"Expansão sul - Laf.",area:12300,fase:"1º Contato",status:"Sem interesse",contato:"2025-03-28",followup:"2025-05-10",acao:"Reaquecimento 30 dias",origem:"Google Maps",modelo:"—",vgv:"",prob:15,obs:"2ª tentativa WhatsApp prevista",resp:"Maysa"},
+    {id:7,nome:"Construtora Pinheiro ME",loc:"Área comercial - Centro",area:6800,fase:"Reunião Técnica",status:"Proposta",contato:"2025-03-10",followup:"2025-04-23",acao:"Enviar laudo técnico",origem:"Indicação",modelo:"Permuta",vgv:"2100000",prob:80,obs:"Muito interessados, aguardando laudo",resp:"Equipe Técnica"},
+    {id:8,nome:"Roberto Alves Neto",loc:"Bairro Industrial",area:7500,fase:"Identificação",status:"Novo",contato:"",followup:"2025-04-24",acao:"Enviar WhatsApp",origem:"Cartório",modelo:"—",vgv:"",prob:5,obs:"Primeiro contato ainda não realizado",resp:"Maysa"},
+    {id:9,nome:"Sítio Três Irmãos",loc:"Rod. 482 - acesso Dores",area:55000,fase:"Fechado",status:"Contrato",contato:"2025-01-05",followup:"",acao:"—",origem:"Corretora parceira",modelo:"Permuta",vgv:"7800000",prob:100,obs:"Contrato assinado em 15/03/2025",resp:"Maysa"},
+    {id:10,nome:"Paulo Henrique Melo",loc:"Bairro São João",area:4200,fase:"Fechado",status:"Declinado",contato:"2025-02-01",followup:"",acao:"—",origem:"Instagram",modelo:"—",vgv:"",prob:0,obs:"Vendeu para terceiro antes da nossa proposta",resp:"Maysa"},
+  ];
+}
+function seedHist(){
+  return [
+    {id:1,lid:5,nome:"Herdeiros Prado",data:"2025-01-28",canal:"Ligação",tipo:"1º Contato",resumo:"Falei com Felipe, filho mais velho. Interesse inicial. Precisa alinhar com os 2 irmãos.",proximo:"Agendar reunião com os 3 herdeiros",resp:"Maysa"},
+    {id:2,lid:5,nome:"Herdeiros Prado",data:"2025-02-15",canal:"Presencial",tipo:"Reunião Técnica",resumo:"Reunião com Felipe e Carlos. Apresentamos modelo SPE. Muito receptivos.",proximo:"Enviar proposta formal em 2 semanas",resp:"Equipe Técnica"},
+    {id:3,lid:7,nome:"Construtora Pinheiro ME",data:"2025-03-10",canal:"WhatsApp",tipo:"1º Contato",resumo:"Respondeu em 2h. Quer maximizar retorno sem vender o imóvel.",proximo:"Agendar visita técnica",resp:"Maysa"},
+    {id:4,lid:7,nome:"Construtora Pinheiro ME",data:"2025-03-18",canal:"Presencial",tipo:"Visita técnica",resumo:"Topografia favorável. Viabilidade confirmada para ~80 lotes alto padrão.",proximo:"Entregar laudo técnico e proposta",resp:"Equipe Técnica"},
+    {id:5,lid:4,nome:"Antônio Carlos Ribeiro",data:"2025-02-14",canal:"Instagram DM",tipo:"1º Contato",resumo:"Nos achou pelo Instagram. Área menor mas bem localizada.",proximo:"Ligar para qualificar e agendar reunião",resp:"Maysa"},
+    {id:6,lid:4,nome:"Antônio Carlos Ribeiro",data:"2025-03-02",canal:"Presencial",tipo:"Reunião Técnica",resumo:"Endividado, precisa de caixa. Apresentamos aquisição parcial + participação.",proximo:"Enviar proposta de aquisição",resp:"Maysa"},
+  ];
+}
+
+let leads=loadLeads(), hist=loadHist();
+let activeFilter="Todos", editingId=null, interLid=null;
+
+// ── HELPERS ───────────────────────────────────────────
+function fmtDate(d){if(!d)return"—";const p=d.split("-");return p[2]+"/"+p[1]+"/"+p[0]}
+function fmtVgv(v){if(!v)return"—";return"R$ "+Number(v).toLocaleString("pt-BR")}
+function today(){return new Date().toISOString().split("T")[0]}
+function isVencido(d){return d&&d<=today()}
+function isAtivo(l){return l.status!=="Contrato"&&l.status!=="Declinado"}
+function g(id){const el=document.getElementById(id);return el?el.value:""}
+function selOpts(opts,val){return opts.map(o=>`<option${o===val?" selected":""}>${o}</option>`).join("")}
+
+function showToast(msg,dur=2200){
+  const t=document.getElementById("toast");
+  t.textContent=msg; t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"),dur);
+}
+
+// ── NAV ───────────────────────────────────────────────
+function showScreen(name){
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+  document.getElementById("screen-"+name).classList.add("active");
+  document.getElementById("tab-"+name).classList.add("active");
+  if(name==="dash") renderDash();
+  if(name==="hist") renderHist();
+}
+
+// ── FILTROS ───────────────────────────────────────────
+function buildFilters(){
+  document.getElementById("filter-chips").innerHTML=
+    ["Todos",...STATUS_LIST].map(f=>
+      `<button class="chip${f===activeFilter?" on":""}" onclick="setFilter('${f.replace(/'/g,"\'")}')">${f}</button>`
+    ).join("");
+}
+function setFilter(f){activeFilter=f;buildFilters();renderLeads()}
+
+// ── LEADS LIST ────────────────────────────────────────
+function renderLeads(){
+  const q=(g("search-input")||"").toLowerCase();
+  const filtered=leads.filter(l=>{
+    const mQ=!q||[l.nome,l.loc,l.fase,l.status,l.obs].some(x=>(x||"").toLowerCase().includes(q));
+    const mF=activeFilter==="Todos"||l.status===activeFilter;
+    return mQ&&mF;
+  });
+  const venc=leads.filter(l=>isAtivo(l)&&isVencido(l.followup));
+  const banner=document.getElementById("urgentes-banner");
+  banner.innerHTML=(venc.length&&activeFilter==="Todos"&&!q)
+    ?`<div class="urgente-strip">⚡ ${venc.length} follow-up${venc.length>1?"s":""} vencido${venc.length>1?"s":""} — ação necessária hoje</div>`:"";
+  const list=document.getElementById("leads-list");
+  if(!filtered.length){
+    list.innerHTML=`<div class="empty"><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><p>Nenhum lead encontrado</p></div>`;
+    return;
+  }
+  list.innerHTML=filtered.map((l,i)=>cardHTML(l,i)).join("");
+}
+
+function cardHTML(l,i){
+  const venc=isAtivo(l)&&isVencido(l.followup);
+  const bdr=venc?"border-color:#c0392b":"";
+  return `
+<div class="card lead-card" style="${bdr};animation-delay:${i*0.04}s">
+  <div class="card-header" onclick="openLead(${l.id})" style="cursor:pointer">
+    <div style="flex:1">
+      <div class="lead-name">${l.nome}</div>
+      <div class="lead-loc">${l.loc}${l.area?" · "+Number(l.area).toLocaleString("pt-BR")+" m²":""}</div>
+    </div>
+    <svg width="15" height="15" fill="none" stroke="#ccc" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+  </div>
+  <div class="card-body" onclick="openLead(${l.id})" style="cursor:pointer">
+    <div class="lead-row">
+      ${faseBadge(l.fase)}
+      ${statusBadge(l.status)}
+    </div>
+    <div class="meta-row">
+      <div class="meta-item">
+        <div class="meta-label">Follow-up</div>
+        <div class="meta-val${venc?" urgente":""}">${fmtDate(l.followup)}</div>
+      </div>
+      ${l.vgv?`<div class="meta-item"><div class="meta-label">VGV</div><div class="meta-val ouro">${fmtVgv(l.vgv)}</div></div>`:""}
+      <div class="meta-item"><div class="meta-label">Prob.</div><div class="meta-val">${l.prob}%</div></div>
+    </div>
+    ${l.acao&&l.acao!=="—"?`<div class="acao-pill"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>${l.acao}</div>`:""}
+  </div>
+  <div class="card-actions">
+    <button class="btn btn-ghost btn-sm" style="flex:1" onclick="openLead(${l.id})">Ver detalhes</button>
+    <button class="btn btn-ghost btn-sm" style="flex:1" onclick="openEditLead(${l.id})">✏️ Editar</button>
+    <button class="btn btn-danger btn-sm" onclick="quickDelete(${l.id},event)">🗑 Excluir</button>
+  </div>
+</div>`;
+}
+
+// ── QUICK DELETE (botão no card) ──────────────────────
+
+// ── MODAL CONFIRMAÇÃO (substitui confirm() bloqueado no iOS) ──
+let _modalCb = null;
+function modalConfirm(){ 
+  document.getElementById("modal-overlay").classList.remove("open");
+  if(_modalCb){ const cb=_modalCb; _modalCb=null; cb(); }
+}
+function modalCancel(){ 
+  document.getElementById("modal-overlay").classList.remove("open");
+  _modalCb=null;
+}
+function showConfirm(title, msg, onConfirm, danger=true){
+  document.getElementById("modal-title").textContent = title;
+  document.getElementById("modal-msg").textContent = msg;
+  const btn = document.getElementById("modal-ok");
+  btn.className = "modal-confirm" + (danger ? "" : " ouro");
+  btn.textContent = danger ? "Excluir" : "Confirmar";
+  _modalCb = onConfirm;
+  document.getElementById("modal-overlay").classList.add("open");
+}
+
+function quickDelete(id, event){
+  if(event && event.stopPropagation) event.stopPropagation();
+  const l=leads.find(x=>x.id===id);
+  if(!l){ showToast("Lead não encontrado"); return; }
+  showConfirm(
+    "Excluir lead",
+    'Excluir "' + l.nome + '" permanentemente? Esta ação não pode ser desfeita.',
+    ()=>{
+      leads=leads.filter(x=>x.id!==id);
+      hist=hist.filter(x=>x.lid!==id);
+      saveLeads(leads);
+      saveHist(hist);
+      renderLeads();
+      renderDash();
+      showToast("Lead excluído ✓");
+    }
+  );
+}
+
+// ── DETALHE DO LEAD ───────────────────────────────────
+function openLead(id){
+  const l=leads.find(x=>x.id===id);
+  if(!l) return;
+  editingId=id;
+  document.getElementById("dl-name").textContent=l.nome;
+  const venc=isAtivo(l)&&isVencido(l.followup);
+  const lhist=hist.filter(h=>h.lid===id).sort((a,b)=>b.data.localeCompare(a.data));
+  document.getElementById("dl-body").innerHTML=`
+    <div class="lead-row" style="margin-bottom:14px">${faseBadge(l.fase)} ${statusBadge(l.status)}</div>
+    <div class="detail-grid">
+      <div><div class="field-label">Localização</div><div class="field-val">${l.loc||"—"}</div></div>
+      <div><div class="field-label">Área</div><div class="field-val">${l.area?Number(l.area).toLocaleString("pt-BR")+" m²":"—"}</div></div>
+      <div><div class="field-label">Origem</div><div class="field-val">${l.origem||"—"}</div></div>
+      <div><div class="field-label">Modelo</div><div class="field-val">${l.modelo||"—"}</div></div>
+      <div><div class="field-label">VGV Total Estimado</div><div class="field-val" style="color:var(--ouro-text);font-weight:600">${fmtVgv(l.vgv)}</div></div>
+      <div><div class="field-label">Probabilidade</div><div class="field-val">${l.prob}%</div></div>
+      <div><div class="field-label">1º Contato</div><div class="field-val">${fmtDate(l.contato)}</div></div>
+      <div><div class="field-label">Responsável</div><div class="field-val">${l.resp||"—"}</div></div>
+    </div>
+    ${(l.vgvVista||l.vgvPrazo||l.vm2||l.parceria)?`
+    <div style="background:var(--bg);border-radius:var(--r-sm);padding:12px;margin-bottom:10px;border:1px solid var(--border)">
+      <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">💰 Financeiro</div>
+      <div class="detail-grid">
+        ${l.vgvVista?`<div><div class="field-label">VGV à Vista</div><div class="field-val" style="color:var(--ouro-text);font-weight:600">${fmtVgv(l.vgvVista)}</div></div>`:""}
+        ${l.vgvPrazo?`<div><div class="field-label">VGV à Prazo</div><div class="field-val" style="color:var(--ouro-text);font-weight:600">${fmtVgv(l.vgvPrazo)}</div></div>`:""}
+        ${l.prazo?`<div><div class="field-label">Prazo Parcelamento</div><div class="field-val">${l.prazo}</div></div>`:""}
+        ${l.vm2?`<div><div class="field-label">Valor m²</div><div class="field-val">${"R$ "+Number(l.vm2).toLocaleString("pt-BR")}</div></div>`:""}
+        ${l.parceria?`<div><div class="field-label">% Parceria MNX</div><div class="field-val" style="font-weight:600">${l.parceria}%</div></div>`:""}
+      </div>
+    </div>`:``}
+    <div class="followup-box">
+      <div class="field-label">Próx. Follow-up</div>
+      <div class="field-val" style="font-weight:600;${venc?"color:var(--danger)":""}">${fmtDate(l.followup)}${venc?" ⚡":""}</div>
+      ${l.acao?`<div style="margin-top:5px"><div class="field-label">Ação</div><div class="field-val">${l.acao}</div></div>`:""}
+    </div>
+    ${l.obs?`<div class="field-group"><div class="field-label">Observações</div><div class="field-val">${l.obs}</div></div>`:""}
+    <div style="margin-top:14px;margin-bottom:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <div class="field-label" style="margin-bottom:0">📎 Documentos (${(l.docs||[]).length})</div>
+        <button class="btn btn-ghost btn-sm" onclick="openDocDrawer(${id})">+ Adicionar</button>
+      </div>
+      ${(l.docs||[]).length ? (l.docs||[]).map((d,i)=>`
+        <div class="doc-item">
+          <div class="doc-icon"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+          <div class="doc-info" onclick="window.open('${d.url}','_blank')" style="cursor:pointer">
+            <div class="doc-nome">${d.nome}</div>
+            <div class="doc-url">${d.url}</div>
+          </div>
+          <button class="doc-del" onclick="deleteDoc(${id},${i})" title="Remover">×</button>
+        </div>`).join("") : `<div style="font-size:12px;color:var(--muted);padding:8px 0">Nenhum documento vinculado ainda.</div>`}
+    </div>
+    <button class="btn btn-ghost" style="width:100%;font-size:13px;margin-bottom:6px" onclick="closeDrawer('lead');openInteracao(${id})">+ Registrar interação</button>
+    ${lhist.length?`
+    <div style="margin-top:14px">
+      <div class="field-label" style="margin-bottom:8px">Histórico (${lhist.length})</div>
+      ${lhist.map(h=>`
+        <div style="background:var(--bg);border-radius:var(--r-sm);padding:10px 12px;margin-bottom:7px">
+          <div style="display:flex;justify-content:space-between;margin-bottom:3px">
+            <span class="hist-meta">${h.canal} · ${h.tipo}</span>
+            <span class="hist-meta">${fmtDate(h.data)}</span>
+          </div>
+          <div class="hist-resumo">${h.resumo}</div>
+          ${h.proximo?`<div class="hist-proximo">→ ${h.proximo}</div>`:""}
+        </div>`).join("")}
+    </div>`:""}
+    <div class="danger-zone">
+      <p>Zona de perigo: esta ação não pode ser desfeita.</p>
+      <button class="btn btn-danger-solid" style="width:100%" onclick="deleteFromDetail(${id})">🗑 Excluir este lead permanentemente</button>
+    </div>
+  `;
+  document.getElementById("dl-edit-btn").onclick=()=>{closeDrawer("lead");openEditLead(id)};
+  openDrawer("lead");
+}
+
+function deleteFromDetail(id){
+  const l=leads.find(x=>x.id===id);
+  if(!l) return;
+  showConfirm(
+    "Excluir lead",
+    'Excluir "' + l.nome + '" permanentemente? Esta ação não pode ser desfeita.',
+    ()=>{
+      leads=leads.filter(x=>x.id!==id);
+      hist=hist.filter(x=>x.lid!==id);
+      saveLeads(leads);
+      saveHist(hist);
+      closeDrawer("lead");
+      renderLeads();
+      renderDash();
+      showToast("Lead excluído ✓");
+    }
+  );
+}
+
+// ── FORM LEAD ─────────────────────────────────────────
+function openAddLead(){editingId=null;document.getElementById("df-title").textContent="Novo lead";renderForm(null);openDrawer("form")}
+function openEditLead(id){editingId=id;document.getElementById("df-title").textContent="Editar lead";renderForm(leads.find(x=>x.id===id));openDrawer("form")}
+
+function renderForm(l){
+  const v=(k,def="")=>(l&&l[k]!==undefined&&l[k]!==null)?l[k]:def;
+  document.getElementById("df-body").innerHTML=`
+    <div class="field-group"><label class="field-label">Nome do proprietário *</label>
+      <input class="field-input" id="f-nome" value="${v("nome")}" placeholder="Nome completo ou razão social"></div>
+    <div class="field-group"><label class="field-label">Localização / Área</label>
+      <input class="field-input" id="f-loc" value="${v("loc")}" placeholder="Ex: Rod. MG-443, km 12"></div>
+    <div class="grid2">
+      <div class="field-group"><label class="field-label">Área (m²)</label>
+        <input class="field-input" id="f-area" type="number" value="${v("area",0)}"></div>
+      <div class="field-group"><label class="field-label">Prob. (%)</label>
+        <input class="field-input" id="f-prob" type="number" min="0" max="100" value="${v("prob",0)}"></div>
+    </div>
+    <div class="field-group"><label class="field-label">Fase <span>(texto livre)</span></label>
+      <input class="field-input" id="f-fase" value="${v("fase")}" placeholder="Ex: 1º Contato, Reunião, Proposta..."></div>
+    <div class="field-group"><label class="field-label">Status</label>
+      <select class="field-input" id="f-status">${selOpts(STATUS_LIST,v("status","Novo"))}</select></div>
+    <div class="grid2">
+      <div class="field-group"><label class="field-label">Próx. Follow-up</label>
+        <input class="field-input" id="f-followup" type="date" value="${v("followup")}"></div>
+      <div class="field-group"><label class="field-label">1º Contato</label>
+        <input class="field-input" id="f-contato" type="date" value="${v("contato")}"></div>
+    </div>
+    <div class="field-group"><label class="field-label">Ação Follow-up <span>(texto livre)</span></label>
+      <input class="field-input" id="f-acao" value="${v("acao")}" placeholder="Ex: Ligar, Enviar proposta..."></div>
+    <div class="field-group"><label class="field-label">Origem <span>(texto livre)</span></label>
+      <input class="field-input" id="f-origem" value="${v("origem")}" placeholder="Ex: Indicação do João, Cartório..."></div>
+    <div class="field-group"><label class="field-label">Modelo de Parceria</label>
+      <select class="field-input" id="f-modelo">${selOpts(MODELOS,v("modelo","—"))}</select></div>
+    <div style="margin-top:4px;margin-bottom:2px;padding:8px 0 4px;border-top:1px solid var(--border);font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">💰 Financeiro</div>
+    <div class="grid2">
+      <div class="field-group"><label class="field-label">VGV à Vista (R$)</label>
+        <input class="field-input" id="f-vgv-vista" type="number" value="${v("vgvVista")}" placeholder="0"></div>
+      <div class="field-group"><label class="field-label">VGV à Prazo (R$)</label>
+        <input class="field-input" id="f-vgv-prazo" type="number" value="${v("vgvPrazo")}" placeholder="0"></div>
+    </div>
+    <div class="grid2">
+      <div class="field-group"><label class="field-label">Prazo Parcelamento</label>
+        <input class="field-input" id="f-prazo" value="${v("prazo")}" placeholder="Ex: 36x, 60 meses..."></div>
+      <div class="field-group"><label class="field-label">Valor m² Estimado (R$)</label>
+        <input class="field-input" id="f-vm2" type="number" value="${v("vm2")}" placeholder="0"></div>
+    </div>
+    <div class="grid2">
+      <div class="field-group"><label class="field-label">VGV Total Estimado (R$)</label>
+        <input class="field-input" id="f-vgv" type="number" value="${v("vgv")}" placeholder="0"></div>
+      <div class="field-group"><label class="field-label">% Parceria MNX</label>
+        <input class="field-input" id="f-parceria" type="number" min="0" max="100" value="${v("parceria")}" placeholder="Ex: 30"></div>
+    </div>
+    <div class="field-group"><label class="field-label">Responsável</label>
+      <input class="field-input" id="f-resp" value="${v("resp","Maysa")}"></div>
+    <div class="field-group"><label class="field-label">Observações</label>
+      <textarea class="field-input" id="f-obs" placeholder="Anote tudo que for relevante...">${v("obs")}</textarea></div>
+  `;
+}
+
+function saveLead(){
+  const nome=g("f-nome").trim();
+  if(!nome){alert("Informe o nome do proprietário");return}
+  const data={nome,loc:g("f-loc").trim(),area:Number(g("f-area"))||0,prob:Number(g("f-prob"))||0,
+    fase:g("f-fase").trim(),status:g("f-status"),followup:g("f-followup"),contato:g("f-contato"),
+    acao:g("f-acao").trim(),origem:g("f-origem").trim(),modelo:g("f-modelo"),
+    vgv:g("f-vgv"),obs:g("f-obs").trim(),resp:g("f-resp").trim()||"Maysa",
+    vgvVista:g("f-vgv-vista"),vgvPrazo:g("f-vgv-prazo"),
+    prazo:g("f-prazo").trim(),vm2:g("f-vm2"),parceria:Number(g("f-parceria"))||0};
+  if(editingId){
+    const idx=leads.findIndex(x=>x.id===editingId);
+    if(idx>=0){
+      const existingDocs=leads[idx].docs||[];
+      leads[idx]={...leads[idx],...data,docs:existingDocs};
+    }
+  }else{
+    data.id=Date.now();
+    data.docs=[];
+    leads.unshift(data);
+  }
+  saveLeads(leads);
+  closeDrawer("form");
+  renderLeads();
+  showToast(editingId?"Lead atualizado ✓":"Lead adicionado ✓");
+}
+
+// ── DOCUMENTOS ───────────────────────────────────────
+let docLeadId = null;
+
+function openDocDrawer(lid){
+  docLeadId = lid;
+  const l = leads.find(x=>x.id===lid);
+  document.getElementById("doc-lead-name").textContent = l ? l.nome : "";
+  document.getElementById("doc-nome-input").value = "";
+  document.getElementById("doc-url-input").value = "";
+  renderDocList(lid);
+  openDrawer("doc");
+}
+
+function renderDocList(lid){
+  const l = leads.find(x=>x.id===lid);
+  const docs = (l && l.docs) || [];
+  const el = document.getElementById("doc-list");
+  if(!docs.length){
+    el.innerHTML = `<div style="font-size:12px;color:var(--muted);padding:8px 0;text-align:center">Nenhum documento ainda</div>`;
+    return;
+  }
+  el.innerHTML = docs.map((d,i)=>`
+    <div class="doc-item">
+      <div class="doc-icon"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+      <div class="doc-info" onclick="window.open('${d.url}','_blank')" style="cursor:pointer">
+        <div class="doc-nome">${d.nome}</div>
+        <div class="doc-url">${d.url}</div>
+      </div>
+      <button class="doc-del" onclick="deleteDoc(${lid},${i})" title="Remover">×</button>
+    </div>`).join("");
+}
+
+function addDoc(){
+  const nome = document.getElementById("doc-nome-input").value.trim();
+  const url  = document.getElementById("doc-url-input").value.trim();
+  if(!nome){ alert("Informe o nome do documento"); return; }
+  if(!url){  alert("Cole o link do documento"); return; }
+  const idx = leads.findIndex(x=>x.id===docLeadId);
+  if(idx<0) return;
+  if(!leads[idx].docs) leads[idx].docs=[];
+  leads[idx].docs.push({nome, url});
+  saveLeads(leads);
+  document.getElementById("doc-nome-input").value="";
+  document.getElementById("doc-url-input").value="";
+  renderDocList(docLeadId);
+  showToast("Documento adicionado ✓");
+}
+
+function deleteDoc(lid, idx){
+  showConfirm(
+    "Remover documento",
+    "Remover este documento do lead? O arquivo original não será afetado.",
+    ()=>{
+      const li = leads.findIndex(x=>x.id===lid);
+      if(li<0) return;
+      leads[li].docs.splice(idx,1);
+      saveLeads(leads);
+      renderDocList(lid);
+      if(document.getElementById("dw-lead").classList.contains("open")) openLead(lid);
+      showToast("Documento removido ✓");
+    },
+    false
+  );
+}
+
+// ── INTERAÇÃO ─────────────────────────────────────────
+function openInteracao(lid){
+  interLid=lid;
+  const l=leads.find(x=>x.id===lid);
+  document.getElementById("di-body").innerHTML=`
+    <div style="background:var(--bg);border-radius:var(--r-sm);padding:9px 12px;margin-bottom:12px;font-size:14px;font-weight:500">${l?l.nome:""}</div>
+    <div class="grid2">
+      <div class="field-group"><label class="field-label">Data</label>
+        <input class="field-input" id="i-data" type="date" value="${today()}"></div>
+      <div class="field-group"><label class="field-label">Canal</label>
+        <select class="field-input" id="i-canal">${selOpts(CANAIS,"WhatsApp")}</select></div>
+    </div>
+    <div class="field-group"><label class="field-label">Tipo</label>
+      <select class="field-input" id="i-tipo">${selOpts(TIPOS_INTER,"Follow-up")}</select></div>
+    <div class="field-group"><label class="field-label">Resumo do contato</label>
+      <textarea class="field-input" id="i-resumo" placeholder="O que foi dito, humor do proprietário, objeções..."></textarea></div>
+    <div class="field-group"><label class="field-label">Próximo passo</label>
+      <input class="field-input" id="i-proximo" placeholder="Ex: Enviar proposta até 30/04"></div>
+    <div class="field-group"><label class="field-label">Responsável</label>
+      <input class="field-input" id="i-resp" value="Maysa"></div>
+  `;
+  openDrawer("inter");
+}
+
+function saveInteracao(){
+  const resumo=g("i-resumo").trim();
+  if(!resumo){alert("Informe o resumo da interação");return}
+  const l=leads.find(x=>x.id===interLid);
+  hist.unshift({id:Date.now(),lid:interLid,nome:l?l.nome:"",
+    data:g("i-data"),canal:g("i-canal"),tipo:g("i-tipo"),
+    resumo,proximo:g("i-proximo").trim(),resp:g("i-resp").trim()});
+  saveHist(hist);
+  closeDrawer("inter");
+  showToast("Interação registrada ✓");
+  if(document.getElementById("screen-hist").classList.contains("active")) renderHist();
+}
+
+// ── DASHBOARD ─────────────────────────────────────────
+function renderDash(){
+  const ativos=leads.filter(isAtivo);
+  const vencidos=ativos.filter(l=>isVencido(l.followup));
+  const emProposta=leads.filter(l=>l.status==="Proposta"||l.status==="Executar com sócio");
+  const vgv=leads.filter(l=>l.status!=="Declinado"&&l.vgv).reduce((s,l)=>s+Number(l.vgv),0);
+  const vgvVista=leads.filter(l=>l.status!=="Declinado"&&l.vgvVista).reduce((s,l)=>s+Number(l.vgvVista),0);
+  const vgvPrazo=leads.filter(l=>l.status!=="Declinado"&&l.vgvPrazo).reduce((s,l)=>s+Number(l.vgvPrazo),0);
+  const ganhos=leads.filter(l=>l.status==="Contrato").length;
+  const perdidos=leads.filter(l=>l.status==="Declinado").length;
+  const byStatus=STATUS_LIST.map(s=>({s,n:leads.filter(l=>l.status===s).length})).filter(x=>x.n>0);
+  const maxS=Math.max(...byStatus.map(x=>x.n),1);
+  const fases={};
+  leads.forEach(l=>{if(l.fase) fases[l.fase]=(fases[l.fase]||0)+1});
+  const byFase=Object.entries(fases).sort((a,b)=>b[1]-a[1]);
+  const maxF=Math.max(...byFase.map(x=>x[1]),1);
+  const origens={};
+  leads.forEach(l=>{if(l.origem) origens[l.origem]=(origens[l.origem]||0)+1});
+  const byOrigem=Object.entries(origens).sort((a,b)=>b[1]-a[1]);
+
+  document.getElementById("dash-content").innerHTML=`
+    <div class="kpi-grid">
+      <div class="kpi-card"><div class="kpi-label">Leads ativos</div><div class="kpi-val">${ativos.length}</div><div class="kpi-sub">${vencidos.length} follow-up vencido</div></div>
+      <div class="kpi-card"><div class="kpi-label">Em proposta</div><div class="kpi-val ouro">${emProposta.length}</div><div class="kpi-sub">Proposta + c/ sócio</div></div>
+      <div class="kpi-card" style="grid-column:span 2"><div class="kpi-label">VGV total no pipeline</div><div class="kpi-val" style="font-size:22px">${vgv?"R$ "+vgv.toLocaleString("pt-BR"):"—"}</div><div class="kpi-sub">Excluindo declinados</div></div>
+      ${vgvVista?`<div class="kpi-card"><div class="kpi-label">VGV à Vista</div><div class="kpi-val ouro" style="font-size:16px">R$ ${vgvVista.toLocaleString("pt-BR")}</div><div class="kpi-sub">Pipeline ativo</div></div>`:""}
+      ${vgvPrazo?`<div class="kpi-card"><div class="kpi-label">VGV à Prazo</div><div class="kpi-val ouro" style="font-size:16px">R$ ${vgvPrazo.toLocaleString("pt-BR")}</div><div class="kpi-sub">Pipeline ativo</div></div>`:""}
+      <div class="kpi-card"><div class="kpi-label">Contratos</div><div class="kpi-val verde">${ganhos}</div></div>
+      <div class="kpi-card"><div class="kpi-label">Declinados</div><div class="kpi-val red">${perdidos}</div></div>
+    </div>
+    <div class="section-title">Por status</div>
+    <div class="funil-row">${byStatus.map(({s,n})=>{
+      const c=STATUS_COLOR[s]||{bg:"#eee",color:"#555"};
+      return`<div class="funil-item"><div class="funil-dot" style="background:${c.color}"></div><div class="funil-label">${s}</div><div class="funil-bar-wrap"><div class="funil-bar" style="width:${Math.round(n/maxS*100)}%;background:${c.color}"></div></div><div class="funil-count" style="color:${c.color}">${n}</div></div>`;
+    }).join("")}</div>
+    ${byFase.length?`<div class="section-title">Por fase</div><div class="funil-row">${byFase.map(([f,n])=>`<div class="funil-item"><div class="funil-dot" style="background:var(--ouro)"></div><div class="funil-label">${f}</div><div class="funil-bar-wrap"><div class="funil-bar" style="width:${Math.round(n/maxF*100)}%;background:var(--ouro)"></div></div><div class="funil-count" style="color:var(--ouro-text)">${n}</div></div>`).join("")}</div>`:""}
+    ${byOrigem.length?`<div class="section-title">Por origem</div><div class="funil-row">${byOrigem.map(([o,n])=>`<div class="funil-item"><div class="funil-dot" style="background:var(--muted)"></div><div class="funil-label">${o}</div><div class="funil-count" style="color:var(--muted);font-size:16px">${n}</div></div>`).join("")}</div>`:""}
+    ${vencidos.length?`<div class="section-title">Follow-ups vencidos</div><div class="funil-row">${vencidos.map(l=>`<div class="funil-item" onclick="showScreen('leads');setTimeout(()=>openLead(${l.id}),200)" style="cursor:pointer"><div class="funil-dot" style="background:var(--danger)"></div><div style="flex:1"><div class="funil-label">${l.nome}</div><div style="font-size:11px;color:var(--muted)">${fmtDate(l.followup)} · ${l.acao||"—"}</div></div><svg width="13" height="13" fill="none" stroke="#ccc" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></div>`).join("")}</div>`:""}
+    <div class="section-title">Gerenciar dados</div>
+    <div class="funil-row" style="overflow:visible">
+      <div class="funil-item" style="flex-direction:column;align-items:flex-start;gap:6px;padding:14px">
+        <div style="font-size:13px;font-weight:500">Total de leads cadastrados: <strong>${leads.length}</strong></div>
+        <div style="font-size:12px;color:var(--muted)">Interações registradas: ${hist.length}</div>
+        <button onclick="openDrawer('sync')" style="margin-top:10px;width:100%;padding:11px;background:var(--navy);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">🔄 Sincronizar / Backup</button>
+        <button class="btn btn-danger" style="margin-top:8px;width:100%;padding:10px;font-size:13px" onclick="openDrawer('reset')">🗑 Limpar todos os dados</button>
+      </div>
+    </div>
+  `;
+}
+
+// ── RESET — CORRIGIDO ─────────────────────────────────
+// O problema anterior: resetData() zerava os arrays mas não atualizava
+// o DOM corretamente e não tinha feedback visual claro.
+// Solução: drawer de confirmação dedicado + re-render completo + toast.
+function confirmReset(){
+  // Limpar localStorage
+  localStorage.removeItem(K_LEADS);
+  localStorage.removeItem(K_HIST);
+  // Resetar arrays globais
+  leads = [];
+  hist  = [];
+  // Persistir arrays vazios
+  saveLeads(leads);
+  saveHist(hist);
+  // Fechar drawer
+  closeDrawer("reset");
+  renderDash();
+  // Atualizar todas as views
+  renderLeads();
+  renderDash();
+  // Feedback
+  showToast("Todos os dados foram apagados");
+}
+
+// ── HISTÓRICO ─────────────────────────────────────────
+function renderHist(){
+  const el=document.getElementById("hist-content");
+  if(!hist.length){
+    el.innerHTML=`<div class="empty"><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg><p>Nenhuma interação registrada</p></div>`;
+    return;
+  }
+  const sorted=[...hist].sort((a,b)=>b.data.localeCompare(a.data));
+  const byDate={};
+  sorted.forEach(h=>{(byDate[h.data]=byDate[h.data]||[]).push(h)});
+  el.innerHTML=Object.entries(byDate).map(([date,items])=>`
+    <div class="section-title">${fmtDate(date)}</div>
+    ${items.map(h=>`
+      <div class="card" style="margin-bottom:8px">
+        <div class="card-header" style="padding-bottom:6px">
+          <div style="flex:1"><div style="font-size:14px;font-weight:600">${h.nome}</div>
+          <div class="hist-meta" style="margin-top:1px">${h.canal} · ${h.tipo} · ${h.resp}</div></div>
+        </div>
+        <div class="card-body">
+          <div class="hist-resumo">${h.resumo}</div>
+          ${h.proximo?`<div class="hist-proximo">→ ${h.proximo}</div>`:""}
+        </div>
+      </div>`).join("")}
+  `).join("");
+}
+
+// ── DRAWERS ───────────────────────────────────────────
+function openDrawer(n){document.getElementById("ov-"+n).classList.add("open");document.getElementById("dw-"+n).classList.add("open")}
+function closeDrawer(n){document.getElementById("ov-"+n).classList.remove("open");document.getElementById("dw-"+n).classList.remove("open")}
+
+// ── INIT ─────────────────────────────────────────────
+buildFilters();
+renderLeads();
+
+
+// ── EXPORTAR DADOS ────────────────────────────────────
+function exportarDados() {
+  const payload = {
+    versao: "mnx_crm_v4",
+    exportadoEm: new Date().toISOString(),
+    leads: leads,
+    hist: hist
+  };
+  const json = JSON.stringify(payload, null, 2);
+  const blob = new Blob([json], {type: 'application/json;charset=utf-8'});
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  const now  = new Date();
+  const stamp = now.getFullYear()+'-'+(now.getMonth()+1+'').padStart(2,'0')+'-'+(now.getDate()+'').padStart(2,'0');
+  a.href     = url;
+  a.download = 'MNX_CRM_backup_' + stamp + '.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('Backup exportado! Salve no iCloud Drive ou Google Drive.');
+}
+
+// ── IMPORTAR DADOS ────────────────────────────────────
+function importarDados() {
+  const input = document.createElement('input');
+  input.type  = 'file';
+  input.accept = '.json,application/json';
+  input.onchange = function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(ev) {
+      try {
+        const data = JSON.parse(ev.target.result);
+        if (!data.leads || !data.hist) {
+          alert('Arquivo inválido. Use um backup exportado pelo MNX CRM.');
+          return;
+        }
+        showConfirm(
+          "Importar backup",
+          "Isso vai SUBSTITUIR todos os dados atuais. Leads no backup: " + data.leads.length + ". Interações: " + data.hist.length + ". Deseja continuar?",
+          ()=>{
+            leads = data.leads;
+            hist  = data.hist;
+            saveLeads(leads);
+            saveHist(hist);
+            closeDrawer('sync');
+            renderLeads();
+            renderDash();
+            showToast('✅ ' + leads.length + ' leads importados com sucesso!');
+          },
+          false
+        );
+      } catch(err) {
+        alert('Erro ao ler o arquivo. Verifique se é um backup válido do MNX CRM.');
+      }
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+
+</script>
+
+<!-- DRAWER: SINCRONIZAR / BACKUP -->
+<div class="overlay open" id="ov-sync" onclick="closeDrawer('sync')"></div>
+<div class="drawer open" id="dw-sync">
+  <div class="drawer-handle"></div>
+  <div class="drawer-title">🔄 Sincronizar Dados</div>
+  <div class="drawer-body">
+
+    <div style="background:#f0f9ff;border:1px solid #bae0ff;border-radius:10px;padding:14px;margin-bottom:14px">
+      <div style="font-size:13px;font-weight:700;color:#0c447c;margin-bottom:6px">Como funciona a sincronização</div>
+      <div style="font-size:12px;color:#1a1a1a;line-height:1.8">
+        Os dados ficam salvos em cada aparelho separadamente.<br>
+        Para sincronizar, basta <strong>Exportar</strong> no aparelho de origem e <strong>Importar</strong> no destino.<br>
+        Guarde o backup no <strong>iCloud Drive</strong> ou <strong>Google Drive</strong> para acessar de qualquer lugar.
+      </div>
+    </div>
+
+    <div style="background:#f6fff0;border:1px solid #b7efb7;border-radius:10px;padding:14px;margin-bottom:14px">
+      <div style="font-size:13px;font-weight:700;color:#1a5c2a;margin-bottom:8px">📤 Passo 1 — Exportar (no aparelho principal)</div>
+      <div style="font-size:12px;color:#1a1a1a;line-height:1.8;margin-bottom:10px">
+        Gera um arquivo <strong>.json</strong> com todos os seus leads e histórico.<br>
+        Salve no <strong>iCloud Drive</strong> ou <strong>Google Drive</strong>.
+      </div>
+      <button onclick="exportarDados()" style="width:100%;padding:12px;background:#1a5c2a;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">
+        📤 Exportar meus dados (backup)
+      </button>
+    </div>
+
+    <div style="background:#fff8f0;border:1px solid #ffd591;border-radius:10px;padding:14px;margin-bottom:14px">
+      <div style="font-size:13px;font-weight:700;color:#7a4f00;margin-bottom:8px">📥 Passo 2 — Importar (no outro aparelho)</div>
+      <div style="font-size:12px;color:#1a1a1a;line-height:1.8;margin-bottom:10px">
+        Abre o arquivo <strong>.json</strong> exportado e carrega os dados neste aparelho.<br>
+        ⚠️ Os dados atuais deste aparelho serão substituídos.
+      </div>
+      <button onclick="importarDados()" style="width:100%;padding:12px;background:#c9a84c;color:#1a1a1a;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">
+        📥 Importar backup (.json)
+      </button>
+    </div>
+
+    <div style="background:#f8f0ff;border:1px solid #d9b8ff;border-radius:10px;padding:12px;margin-bottom:16px">
+      <div style="font-size:12px;color:#3c3489;line-height:1.7">
+        💡 <strong>Dica de fluxo diário:</strong><br>
+        1. Trabalhe no iPhone durante o dia<br>
+        2. Ao final: <strong>Exportar</strong> → salvar no iCloud Drive<br>
+        3. No iPad ou PC: <strong>Importar</strong> → selecionar o arquivo do iCloud<br>
+        4. Dados sincronizados em todos os aparelhos ✅
+      </div>
+    </div>
+
+    <button class="btn btn-ghost" style="width:100%;padding:12px;font-size:14px" onclick="closeDrawer('sync')">Fechar</button>
+  </div>
+</div>
+
+<!-- DRAWER: INSTALAR / SALVAR -->
+<div class="overlay" id="ov-install" onclick="closeDrawer('install')"></div>
+<div class="drawer" id="dw-install">
+  <div class="drawer-handle"></div>
+  <div class="drawer-title">📲 Instalar como App</div>
+  <div class="drawer-body">
+
+    <div style="background:#f0f9ff;border:1px solid #bae0ff;border-radius:10px;padding:14px;margin-bottom:16px">
+      <div style="font-size:13px;font-weight:600;color:#0c447c;margin-bottom:8px">📱 iPhone / iPad</div>
+      <ol style="font-size:13px;color:#1a1a1a;line-height:1.9;padding-left:18px">
+        <li>Abra o link do CRM no <strong>Safari</strong></li>
+        <li>Toque no ícone de <strong>Compartilhar</strong> (⬆️)</li>
+        <li>Toque em <strong>"Adicionar à Tela de Início"</strong></li>
+        <li>Pronto — ícone MNX CRM na tela inicial! 🎉</li>
+      </ol>
+    </div>
+
+    <div style="background:#f6fff0;border:1px solid #b7efb7;border-radius:10px;padding:14px;margin-bottom:16px">
+      <div style="font-size:13px;font-weight:600;color:#1a5c2a;margin-bottom:8px">💻 PC / Mac</div>
+      <ol style="font-size:13px;color:#1a1a1a;line-height:1.9;padding-left:18px">
+        <li>Abra o link do CRM no <strong>Chrome</strong></li>
+        <li>Clique nos 3 pontos → <strong>Salvar e compartilhar → Criar atalho</strong></li>
+        <li>Marque <strong>"Abrir como janela"</strong> → Criar</li>
+      </ol>
+    </div>
+
+    <div style="background:#fffbe6;border:1px solid #ffe58f;border-radius:10px;padding:12px;margin-bottom:20px">
+      <div style="font-size:12px;color:#7a4f00;line-height:1.6">💡 Para sincronizar dados entre aparelhos, use o botão <strong>🔄 Sincronizar</strong> na tela principal.</div>
+    </div>
+
+    <button class="btn btn-ghost" style="width:100%;padding:12px;font-size:14px" onclick="closeDrawer('install')">Fechar</button>
+  </div>
+</div>
+
+
+<!-- MODAL CONFIRMAÇÃO CUSTOMIZADO -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-title" id="modal-title">Confirmar</div>
+    <div class="modal-msg" id="modal-msg"></div>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="modalCancel()">Cancelar</button>
+      <button class="modal-confirm" id="modal-ok" onclick="modalConfirm()">Confirmar</button>
+    </div>
+  </div>
+</div>
+<!-- DRAWER: DOCUMENTOS -->
+<div class="overlay" id="ov-doc" onclick="closeDrawer('doc')"></div>
+<div class="drawer" id="dw-doc">
+  <div class="drawer-handle"></div>
+  <div class="drawer-title">📎 Documentos</div>
+  <div class="drawer-body">
+    <div style="font-size:13px;font-weight:500;color:var(--muted);margin-bottom:14px" id="doc-lead-name"></div>
+
+    <div style="background:var(--bg);border-radius:var(--r-sm);padding:12px;margin-bottom:14px">
+      <div style="font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px">Adicionar documento</div>
+      <div class="field-group">
+        <label class="field-label">Nome do documento</label>
+        <input class="field-input" id="doc-nome-input" placeholder="Ex: Matrícula, RG do proprietário, Laudo técnico...">
+      </div>
+      <div class="field-group" style="margin-bottom:10px">
+        <label class="field-label">Link (Google Drive, iCloud, WhatsApp...)</label>
+        <input class="field-input" id="doc-url-input" placeholder="Cole o link aqui">
+      </div>
+      <button onclick="addDoc()" style="width:100%;padding:10px;background:var(--navy);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">+ Adicionar documento</button>
+    </div>
+
+    <div class="field-label" style="margin-bottom:8px">Documentos vinculados</div>
+    <div id="doc-list"></div>
+
+    <div style="background:#f0f9ff;border:1px solid #bae0ff;border-radius:8px;padding:10px;margin-top:12px">
+      <div style="font-size:11px;color:#0c447c;line-height:1.7">
+        💡 <strong>Como obter o link:</strong><br>
+        • <strong>Google Drive:</strong> clique com botão direito → "Compartilhar" → copiar link<br>
+        • <strong>iCloud Drive:</strong> toque no arquivo → "Compartilhar" → "Copiar link"<br>
+        • <strong>WhatsApp:</strong> segure o arquivo → "Encaminhar" → copiar link de visualização
+      </div>
+    </div>
+  </div>
+  <div class="drawer-actions">
+    <button class="btn btn-ghost" onclick="closeDrawer('doc');setTimeout(()=>openLead(docLeadId),100)">← Voltar ao lead</button>
+    <button class="btn btn-dark" onclick="closeDrawer('doc')">Fechar</button>
+  </div>
+</div>
+
+</body></html>
