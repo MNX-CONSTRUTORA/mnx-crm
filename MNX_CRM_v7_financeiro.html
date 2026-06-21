@@ -199,7 +199,7 @@ textarea.field-input{resize:vertical;min-height:76px}
       <div class="topbar-title">CRM Prospecção</div>
       <div class="topbar-sub">MNX Incorporação</div>
     </div>
-    <button class="icon-btn" onclick="openDrawer('sync')" title="Sincronizar dados" style="margin-right:4px">
+    <button class="icon-btn" onclick="syncFromSheets()" title="Buscar dados da nuvem" style="margin-right:4px">
       <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
     </button>
     <button class="icon-btn" onclick="openAddLead()">
@@ -615,17 +615,55 @@ function faseBadge(f){
 // ── STORAGE ────────────────────────────────────────────
 const K_LEADS = "mnx_crm_leads_v4";
 const K_HIST  = "mnx_crm_hist_v4";
+const SHEETS_URL = "https://script.google.com/macros/s/AKfycby37GsaFDGweENAGCe9EmLzTEDyfcIywF6r_9cXzIdgD7shGsEASlDL2_jCzdZXz5S0mg/exec";
 
 function loadLeads(){
   try{ const d=localStorage.getItem(K_LEADS); return d?JSON.parse(d):seedLeads(); }
   catch(e){ return seedLeads(); }
 }
-function saveLeads(d){ localStorage.setItem(K_LEADS,JSON.stringify(d)); }
+function saveLeads(d){
+  localStorage.setItem(K_LEADS,JSON.stringify(d));
+  syncToSheets('saveLeads', d);
+}
 function loadHist(){
   try{ const d=localStorage.getItem(K_HIST); return d?JSON.parse(d):seedHist(); }
   catch(e){ return seedHist(); }
 }
-function saveHist(d){ localStorage.setItem(K_HIST,JSON.stringify(d)); }
+function saveHist(d){
+  localStorage.setItem(K_HIST,JSON.stringify(d));
+  syncToSheets('saveHist', d);
+}
+
+// ── SYNC COM GOOGLE SHEETS ────────────────────────────
+function syncToSheets(action, data){
+  try{
+    fetch(SHEETS_URL, {
+      method:'POST',
+      body: JSON.stringify({action: action, [action==='saveLeads'?'leads':'hist']: data}),
+      headers: {'Content-Type':'application/json'}
+    }).catch(function(){});
+  } catch(e){}
+}
+
+function syncFromSheets(){
+  showToast('⏳ Sincronizando com a nuvem...');
+  fetch(SHEETS_URL)
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      if(data.ok && data.leads && data.leads.length > 0){
+        leads = data.leads;
+        hist  = data.hist || [];
+        localStorage.setItem(K_LEADS, JSON.stringify(leads));
+        localStorage.setItem(K_HIST,  JSON.stringify(hist));
+        renderLeads();
+        renderDash();
+        showToast('✅ Dados sincronizados! ' + leads.length + ' leads carregados.');
+      } else {
+        showToast('☁️ Nuvem vazia ou sem novos dados.');
+      }
+    })
+    .catch(function(){ showToast('❌ Sem conexão com a nuvem.'); });
+}
 
 function seedLeads(){
   return [
