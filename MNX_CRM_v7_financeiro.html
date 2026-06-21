@@ -637,32 +637,37 @@ function saveHist(d){
 // ── SYNC COM GOOGLE SHEETS ────────────────────────────
 function syncToSheets(action, data){
   try{
-    fetch(SHEETS_URL, {
-      method:'POST',
-      body: JSON.stringify({action: action, [action==='saveLeads'?'leads':'hist']: data}),
-      headers: {'Content-Type':'application/json'}
-    }).catch(function(){});
+    var script = document.createElement('script');
+    script.src = SHEETS_URL + '?action=' + action + '&data=' + encodeURIComponent(JSON.stringify(data)) + '&callback=_noop' + Date.now();
+    script.onload = function(){ document.head.removeChild(script); };
+    script.onerror = function(){ if(script.parentNode) document.head.removeChild(script); };
+    document.head.appendChild(script);
   } catch(e){}
 }
+function _noop(){}
 
 function syncFromSheets(){
   showToast('⏳ Sincronizando com a nuvem...');
-  fetch(SHEETS_URL)
-    .then(function(r){ return r.json(); })
-    .then(function(data){
-      if(data.ok && data.leads && data.leads.length > 0){
-        leads = data.leads;
-        hist  = data.hist || [];
-        localStorage.setItem(K_LEADS, JSON.stringify(leads));
-        localStorage.setItem(K_HIST,  JSON.stringify(hist));
-        renderLeads();
-        renderDash();
-        showToast('✅ Dados sincronizados! ' + leads.length + ' leads carregados.');
-      } else {
-        showToast('☁️ Nuvem vazia ou sem novos dados.');
-      }
-    })
-    .catch(function(){ showToast('❌ Sem conexão com a nuvem.'); });
+  var script = document.createElement('script');
+  var cbName = '_cb' + Date.now();
+  window[cbName] = function(data){
+    delete window[cbName];
+    document.head.removeChild(script);
+    if(data && data.ok && data.leads && data.leads.length > 0){
+      leads = data.leads;
+      hist  = data.hist || [];
+      localStorage.setItem(K_LEADS, JSON.stringify(leads));
+      localStorage.setItem(K_HIST,  JSON.stringify(hist));
+      renderLeads();
+      renderDash();
+      showToast('✅ ' + leads.length + ' leads sincronizados!');
+    } else {
+      showToast('☁️ Nuvem vazia ou sem dados novos.');
+    }
+  };
+  script.src = SHEETS_URL + '?callback=' + cbName;
+  script.onerror = function(){ showToast('❌ Erro ao conectar com a nuvem.'); };
+  document.head.appendChild(script);
 }
 
 function seedLeads(){
